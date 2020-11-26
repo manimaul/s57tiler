@@ -1,1 +1,2 @@
-cmake-build-*/
+/target
+/geojson_out

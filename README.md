@@ -13,7 +13,7 @@ be published in a TDB Github repo.
 ### Example
 
 ```shell script
-s57tiler $HOME/Charts/ENC_ROOT/US5WA44M/US5WA44M.000 $HOME/Charts/Geojson/US5WA44M
+docker run -v ${HOME}/Charts/:/charts -it s57t s57tiler -i /charts/ENC_ROOT/US5WA28M/US5WA28M.000 -o /charts/GEOJSON
 # todo: (WK) read $HOME/Charts/Geojson/US5WA44M/meta.json with jq for layers list
 pushd $HOME/Charts/Geojson/US5WA44M
 tippecanoe -zg -o $HOME/Charts/MBTiles/US5WA44M.mbtiles \
@@ -31,15 +31,23 @@ docker run --rm -it -v $HOME/Charts/MBTiles:/data -p 8080:80 maptiler/tileserver
 docker run -it --rm -p 8888:8888 maputnik/editor
 ```
 
-### MacOS Dev Setup
-
+You could use ogr2ogr to generate the geojson. However, we need to extract the z coordinate out of the SOUNDG layer.
 ```shell script
-brew install gdal cmake tippecanoe
+ogrinfo $HOME/Charts/ENC_ROOT/US3WA01M/US3WA01M.000 | cut -f2 -d ' '
+ogr2ogr -t_srs 'EPSG:4326' -f GeoJSON $HOME/source/madrona/s57_tiler/geojson_out/ADMARE.json $HOME/Charts/ENC_ROOT/US3WA01M/US3WA01M.000 ADMARE
 ```
 
-### Linux Setup
+###  Dev Setup
 
+MacOS
 ```shell script
-#todo: (WK)
+brew install gdal
 ```
+
+Linux
+```shell script
+apt install -y libgdal-dev
+```
+
+[rustup](https://rustup.rs/)
 

@@ -1,17 +1,12 @@
-FROM debian:buster
+FROM rust:1.48-buster
 
 WORKDIR /workdir
 RUN apt update && \
-    apt install -y libgdal-dev python3-pip build-essential
-
-RUN pip3 install cmake --upgrade
+    apt install -y libgdal-dev
 
 COPY . .
 
-RUN mkdir cmake-build-docker && \
-    cd cmake-build-docker && \
-    /usr/local/bin/cmake .. && \
-    make
+RUN cargo build --release
 
 FROM debian:buster-slim
 
@@ -22,4 +17,4 @@ RUN apt update && \
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=0 /workdir/cmake-build-docker/s57tiler /usr/bin/s57tiler
+COPY --from=0 /workdir/target/release/s57_tiler /usr/bin/s57tiler
