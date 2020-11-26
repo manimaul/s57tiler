@@ -13,6 +13,7 @@ be published in a TDB Github repo.
 ### Example
 
 ```shell script
+docker build -t s57t .
 docker run -v ${HOME}/Charts/:/charts -it s57t s57tiler -i /charts/ENC_ROOT/US5WA28M/US5WA28M.000 -o /charts/GEOJSON
 # todo: (WK) read $HOME/Charts/Geojson/US5WA44M/meta.json with jq for layers list
 pushd $HOME/Charts/Geojson/US5WA44M
@@ -41,12 +42,20 @@ ogr2ogr -t_srs 'EPSG:4326' -f GeoJSON $HOME/source/madrona/s57_tiler/geojson_out
 
 MacOS
 ```shell script
-brew install gdal
+brew install gdal tippecanoe
 ```
 
 Linux
 ```shell script
 apt install -y libgdal-dev
+git clone https://github.com/mapbox/tippecanoe.git && \
+    cd tippecanoe && \
+    make
+sudo cp /tippecanoe/tippecanoe /usr/local/bin/tippecanoe
+sudo cp /tippecanoe/tile-join /usr/local/bin/tile-join
+sudo cp /tippecanoe/tippecanoe-decode /usr/local/bin/tippecanoe-decode
+sudo cp /tippecanoe/tippecanoe-enumerate /usr/local/bin/tippecanoe-enumerate
+sudo cp /tippecanoe/tippecanoe-json-tool /usr/local/bin/tippecanoe-json-tool
 ```
 
 [rustup](https://rustup.rs/)
