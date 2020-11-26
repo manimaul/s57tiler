@@ -14,11 +14,15 @@ be published in a TDB Github repo.
 
 ```shell script
 docker build -t s57t .
-docker run -v ${HOME}/Charts/:/charts -it s57t s57tiler -i /charts/ENC_ROOT/US5WA28M/US5WA28M.000 -o /charts/GEOJSON
-#todo: (WK) cleanup goejson files
-docker run --rm -it -v $HOME/Charts/MBTiles:/data -p 8080:80 maptiler/tileserver-gl
+docker run -v ${HOME}/Charts/:/charts s57t s57tiler -i /charts/ENC_ROOT/US5WA28M/US5WA28M.000 -o /charts/mvt
+docker run --rm -v ${HOME}/Charts/mvt:/data -p 8080:80 maptiler/tileserver-gl
 docker run -it --rm -p 8888:8888 maputnik/editor
 ```
+
+### Screenshots
+
+Un-styled render of Puget Sound chart [US5WA28M](https://charts.noaa.gov/ENCs/ENCsIndv.shtml) rendered with [tileserver-gl](https://github.com/maptiler/tileserver-gl)
+![Screenshot](./screenshots/US5WA28M.png)
 
 You could use ogr2ogr to generate the geojson. However, we need to extract the z coordinate out of the SOUNDG layer.
 ```shell script
