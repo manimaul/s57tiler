@@ -25,26 +25,32 @@ impl S57 {
             panic!(error);
         }
 
+        let mut names: Vec<String> = vec![];
         for layer in self.dataset.layers() {
-            // if !layer.name().eq("SOUNDG")  {
-            //     continue;
-            // }
-            let mut json_out_path = PathBuf::from(out_dir);
-                json_out_path.push(format!("{}.json", layer.name()));
-            println!("rendering layer {:?}", json_out_path);
             let target_sr = SpatialRef::from_epsg(4326).unwrap();
             if let Some(fc) = feature_collection_from_layer(&layer, &target_sr) {
+                names.push(layer.name());
                 let geo_json = if pretty {
                     serde_json::to_string_pretty(&fc).unwrap()
                 } else {
                     fc.to_string()
                 };
-                if json_out_path.exists() {
-                    fs::remove_file(&json_out_path).ok();
-                }
-                fs::write(&json_out_path, geo_json).ok();
+                Self::write_json(out_dir, format!("{}.json", layer.name()).as_str(), &geo_json);
             };
-
         }
+        let meta = serde_json::json!({
+            "layers": names
+        });
+        Self::write_json(out_dir, "meta.json", &serde_json::to_string_pretty(&meta).unwrap())
+    }
+
+    fn write_json(out_dir: &Path, name: &str, contents: &String) {
+        let mut json_out_path = PathBuf::from(out_dir);
+        json_out_path.push(name);
+        println!("writing to - {:?}", json_out_path);
+        if json_out_path.exists() {
+            fs::remove_file(&json_out_path).ok();
+        }
+        fs::write(&json_out_path, contents).ok();
     }
 }

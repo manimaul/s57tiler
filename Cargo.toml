@@ -1,5 +1,5 @@
 [package]
-name = "s57_tiler"
+name = "s57tiler"
 version = "0.1.0"
 authors = ["William Kamp <manimaul@gmail.com>"]
 edition = "2018"
