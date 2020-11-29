@@ -21,12 +21,38 @@
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "#fff",
+        "background-color": "rgb(0,0,0)",
         "background-opacity": 1
       }
     },
     {
-      "id": "LNDARE",
+      "id": "SEAARE_fill",
+      "type": "fill",
+      "source": "src_senc",
+      "source-layer": "SEAARE",
+      "filter": [
+        "all"
+      ],
+      "paint": {
+        "fill-color": "#CEEAEE"
+      }
+    },
+    {
+      "id": "SEAARE_line",
+      "type": "line",
+      "source": "src_senc",
+      "source-layer": "SEAARE",
+      "filter": [
+        "all"
+      ],
+      "paint": {
+        "line-color": "rgb(214,49,201)",
+        "line-dasharray": [4,2],
+        "line-width": 1.5
+      }
+    },
+    {
+      "id": "LNDARE_fill",
       "type": "fill",
       "source": "src_senc",
       "source-layer": "LNDARE",
@@ -38,7 +64,20 @@
       }
     },
     {
-      "id": "SOUNDG",
+      "id": "LNDARE_line",
+      "type": "line",
+      "source": "src_senc",
+      "source-layer": "LNDARE",
+      "filter": [
+        "all"
+      ],
+      "paint": {
+        "line-color": "#4F595B",
+        "line-width": 2
+      }
+    },
+    {
+      "id": "SOUNDG_txt",
       "type": "symbol",
       "source": "src_senc",
       "source-layer": "SOUNDG",
@@ -61,7 +100,9 @@
         "symbol-placement": "point"
       },
       "paint": {
-        "text-color": "rgb(0,0,0)"
+        "text-color": "rgb(255,255,255)",
+        "text-halo-color": "rgb(0,0,0)",
+        "text-halo-width": 1
       }
     }
   ]
