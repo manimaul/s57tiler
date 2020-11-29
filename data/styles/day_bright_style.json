@@ -21,7 +21,7 @@
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "rgb(0,0,0)",
+        "background-color": "#000",
         "background-opacity": 1
       }
     },
@@ -31,7 +31,12 @@
       "source": "src_senc",
       "source-layer": "SEAARE",
       "filter": [
-        "all"
+        "any",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ]
       ],
       "paint": {
         "fill-color": "#CEEAEE"
@@ -43,11 +48,130 @@
       "source": "src_senc",
       "source-layer": "SEAARE",
       "filter": [
+        "any",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ],
+        [
+          "==",
+          "$type",
+          "LineString"
+        ]
+      ],
+      "paint": {
+        "line-color": "#D631C9",
+        "line-dasharray": [
+          4,
+          2
+        ],
+        "line-width": 1.5
+      }
+    },
+    {
+      "id": "DEPARE_line",
+      "type": "line",
+      "source": "src_senc",
+      "source-layer": "DEPARE",
+      "filter": [
         "all"
       ],
       "paint": {
-        "line-color": "rgb(214,49,201)",
-        "line-dasharray": [4,2],
+        "line-color": "#4F595B",
+        "line-width": 1
+      }
+    },
+    {
+      "id": "SLCONS_line",
+      "type": "line",
+      "source": "src_senc",
+      "source-layer": "SLCONS",
+      "filter": [
+        "all"
+      ],
+      "paint": {
+        "line-color": "#4F595B",
+        "line-width": 1
+      }
+    },
+    {
+      "id": "PONTON_fill",
+      "type": "fill",
+      "source": "src_senc",
+      "source-layer": "PONTON",
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ]
+      ],
+      "paint": {
+        "fill-color": "#B7911F"
+      }
+    },
+    {
+      "id": "PONTON_line",
+      "type": "line",
+      "source": "src_senc",
+      "source-layer": "PONTON",
+      "filter": [
+        "any",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ],
+        [
+          "==",
+          "$type",
+          "LineString"
+        ]
+      ],
+      "paint": {
+        "line-color": "#4F595B",
+        "line-width": 1
+      }
+    },
+    {
+      "id": "HULKES_fill",
+      "type": "fill",
+      "source": "src_senc",
+      "source-layer": "HULKES",
+      "filter": [
+        "any",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ]
+      ],
+      "paint": {
+        "fill-color": "#B7911F"
+      }
+    },
+    {
+      "id": "HULKES_line",
+      "type": "line",
+      "source": "src_senc",
+      "source-layer": "HULKES",
+      "filter": [
+        "any",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ],
+        [
+          "==",
+          "$type",
+          "LineString"
+        ]
+      ],
+      "paint": {
+        "line-color": "#4F595B",
         "line-width": 1.5
       }
     },
@@ -57,10 +181,15 @@
       "source": "src_senc",
       "source-layer": "LNDARE",
       "filter": [
-        "all"
+        "any",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ]
       ],
       "paint": {
-        "fill-color": "rgb(201,185,122)"
+        "fill-color": "#C9B97A"
       }
     },
     {
@@ -69,7 +198,17 @@
       "source": "src_senc",
       "source-layer": "LNDARE",
       "filter": [
-        "all"
+        "any",
+        [
+          "==",
+          "$type",
+          "Polygon"
+        ],
+        [
+          "==",
+          "$type",
+          "LineString"
+        ]
       ],
       "paint": {
         "line-color": "#4F595B",
@@ -82,26 +221,37 @@
       "source": "src_senc",
       "source-layer": "SOUNDG",
       "filter": [
-        "all"
+        "any",
+        [
+          "==",
+          "$type",
+          "Point"
+        ]
       ],
       "layout": {
         "text-font": [
           "Roboto Bold"
         ],
-        "text-offset": [0, 1.25],
+        "text-offset": [
+          0,
+          1.25
+        ],
         "text-anchor": "center",
         "text-justify": "center",
-        "text-field": ["get", "SOUNDG"],
+        "text-field": [
+          "get",
+          "SOUNDG"
+        ],
         "text-allow-overlap": true,
-        "text-ignore-placement" : true,
+        "text-ignore-placement": true,
         "text-max-width": 9,
         "text-size": 10,
         "text-padding": 6,
         "symbol-placement": "point"
       },
       "paint": {
-        "text-color": "rgb(255,255,255)",
-        "text-halo-color": "rgb(0,0,0)",
+        "text-color": "#fff",
+        "text-halo-color": "#000",
         "text-halo-width": 1
       }
     }
