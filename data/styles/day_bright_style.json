@@ -1,0 +1,68 @@
+{
+  "version": 8,
+  "name": "Day Bright",
+  "center": [
+    -122.40967,
+    47.26432,
+    13.0
+  ],
+  "zoom": 10.426085190067841,
+  "bearing": 0,
+  "pitch": 0,
+  "sources": {
+    "src_senc": {
+      "type": "vector",
+      "url": "http://localhost:8080/data/tacoma-commencement-bay.json"
+    }
+  },
+  "glyphs": "http://localhost:8080/fonts/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#fff",
+        "background-opacity": 1
+      }
+    },
+    {
+      "id": "LNDARE",
+      "type": "fill",
+      "source": "src_senc",
+      "source-layer": "LNDARE",
+      "filter": [
+        "all"
+      ],
+      "paint": {
+        "fill-color": "rgb(201,185,122)"
+      }
+    },
+    {
+      "id": "SOUNDG",
+      "type": "symbol",
+      "source": "src_senc",
+      "source-layer": "SOUNDG",
+      "filter": [
+        "all"
+      ],
+      "layout": {
+        "text-font": [
+          "Roboto Bold"
+        ],
+        "text-offset": [0, 1.25],
+        "text-anchor": "center",
+        "text-justify": "center",
+        "text-field": ["get", "SOUNDG"],
+        "text-allow-overlap": true,
+        "text-ignore-placement" : true,
+        "text-max-width": 9,
+        "text-size": 10,
+        "text-padding": 6,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-color": "rgb(0,0,0)"
+      }
+    }
+  ]
+}

@@ -14,21 +14,18 @@ be published in a TDB Github repo.
 
 ```shell script
 docker build -t s57t .
-docker run -v ${HOME}/Charts/:/charts s57t s57tiler -i /charts/ENC_ROOT/US5WA28M/US5WA28M.000 -o /charts/mvt
-docker run --rm -v ${HOME}/Charts/mvt:/data -p 8080:80 maptiler/tileserver-gl
+docker run -v $(pwd)/data:/data s57t s57tiler -i /data/charts/US5WA22M/US5WA22M.000 -o /data
+docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
 docker run -it --rm -p 8888:8888 maputnik/editor
 ```
 
 ### Screenshots
+[US5WA22M](https://charts.noaa.gov/ENCs/ENCsIndv.shtml) rendered with [tileserver-gl](https://github.com/maptiler/tileserver-gl)
 
-Un-styled render of Puget Sound chart [US5WA28M](https://charts.noaa.gov/ENCs/ENCsIndv.shtml) rendered with [tileserver-gl](https://github.com/maptiler/tileserver-gl)
-![Screenshot](./screenshots/US5WA28M.png)
-
-You could use ogr2ogr to generate the geojson. However, we need to extract the z coordinate out of the SOUNDG layer.
-```shell script
-ogrinfo $HOME/Charts/ENC_ROOT/US3WA01M/US3WA01M.000 | cut -f2 -d ' '
-ogr2ogr -t_srs 'EPSG:4326' -f GeoJSON $HOME/source/madrona/s57_tiler/geojson_out/ADMARE.json $HOME/Charts/ENC_ROOT/US3WA01M/US3WA01M.000 ADMARE
-```
+|Un-styled|Styled (WIP)|
+|---------|------------|
+|![Screenshot](./screenshots/US5WA22M_data.png)|![Screenshot](./screenshots/US5WA22M.png)|
+ 
 
 ###  Dev Setup
 
