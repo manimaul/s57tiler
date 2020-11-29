@@ -8,9 +8,9 @@ dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 array=( 'chartsymbols.xml' 'rastersymbols-dark.png' 'rastersymbols-day.png' \
 'rastersymbols-dusk.png' 's57attributes.csv' 's57expectedinput.csv' 's57objectclasses.csv')
 
-#for u in "${array[@]}"
-#do
-#    curl "https://raw.githubusercontent.com/OpenCPN/OpenCPN/master/data/s57data/$u" -o \
-#"${dir}/opencpn_resources/$u"
-#
-#done
+for u in "${array[@]}"
+do
+    curl "https://raw.githubusercontent.com/OpenCPN/OpenCPN/master/data/s57data/$u" -o \
+"${dir}/$u"
+
+done
