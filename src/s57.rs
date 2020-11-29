@@ -5,6 +5,7 @@ use std::fs;
 use crate::geojson_builder::feature_collection_from_layer;
 use gdal::spatial_ref::SpatialRef;
 use std::process::Command;
+use std::collections::HashSet;
 
 
 pub struct S57 {
@@ -16,7 +17,12 @@ impl S57 {
         Dataset::open(path).map(|ds| S57 { dataset: ds }).ok()
     }
 
-    pub fn render_geojson(&self, out_dir: &Path, pretty: bool) -> Vec<String> {
+    pub fn render_geojson(
+        &self, out_dir:
+        &Path, pretty: bool,
+        ex_layers: Option<Vec<&str>>,
+        in_layers: Option<Vec<&str>>,
+    ) -> Vec<String> {
         println!("rendering geojson to: {:?}", out_dir);
         if !out_dir.exists() {
             println!("creating directory: {:?}", out_dir);
@@ -28,9 +34,26 @@ impl S57 {
 
         let mut names: Vec<String> = vec![];
         let target_sr = SpatialRef::from_epsg(4326).unwrap();
+        let layer_ex_set: Option<HashSet<_>> = ex_layers.map(|ea| ea.iter().cloned().collect());
+        let layer_in_set: Option<HashSet<_>> = in_layers.map(|ea| ea.iter().cloned().collect());
+
         for layer in self.dataset.layers() {
+            let name = layer.name();
+            if let Some(exclude) = &layer_ex_set {
+                if exclude.contains(&name.as_str()) {
+                    println!("excluding layer: {}", &name);
+                    continue;
+                }
+            };
+
+            if let Some(include) = &layer_in_set {
+                if !include.contains(&name.as_str()) {
+                    println!("skipping layer: {}", &name);
+                    continue;
+                }
+            };
             if let Some(fc) = feature_collection_from_layer(&layer, &target_sr) {
-                let layer_json = format!("{}.json", layer.name());
+                let layer_json = format!("{}.json", &name);
                 let mut json_out_path = PathBuf::from(out_dir);
                 json_out_path.push(layer_json.clone());
                 names.push(format!("{}", json_out_path.to_str().unwrap()));

@@ -35,10 +35,26 @@ fn main() {
             .long("geojson")
             .required(false)
         )
+        .arg(Arg::with_name("layer_ex")
+            .help("Exclude the comma separated list of layers")
+            .short("x")
+            .long("exclude")
+            .required(false)
+            .takes_value(true)
+        )
+        .arg(Arg::with_name("layer_in")
+            .help("Include only the comma separated list of layers")
+            .short("n")
+            .long("include")
+            .required(false)
+            .takes_value(true)
+        )
         .get_matches();
 
     let in_file = matches.value_of("in_file").unwrap();
     let out_dir = matches.value_of("out_dir").unwrap();
+    let layer_ex = matches.value_of("layer_ex").map(|ex| ex.split(",").collect::<Vec<&str>>());
+    let layer_in = matches.value_of("layer_in").map(|ex| ex.split(",").collect::<Vec<&str>>());
     let keep_geojson = matches.is_present("keep_geojson");
 
     let key = CString::new("OGR_S57_OPTIONS").unwrap();
@@ -49,7 +65,7 @@ fn main() {
     }
 
     let s57 = s57::S57::open(Path::new(in_file)).unwrap();
-    let files = s57.render_geojson(Path::new(out_dir), false);
+    let files = s57.render_geojson(Path::new(out_dir), false, layer_ex, layer_in);
     s57::S57::generate_mbtiles(Path::new(out_dir), &files);
 
     if !keep_geojson {
