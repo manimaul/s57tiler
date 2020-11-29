@@ -13,7 +13,7 @@ be published in a TDB Github repo.
 ### Example
 
 ```shell script
-cargo run -- -i $HOME/Charts/ENC_ROOT/US5WA22M/US5WA22M.000 -o $HOME/source/madrona/s57tiler/data -x M_COVR,M_NPUB,M_NSYS,M_QUAL
+cargo run -- -g -i $HOME/Charts/ENC_ROOT/US5WA22M/US5WA22M.000 -o $HOME/source/madrona/s57tiler/data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG
 #OR
 docker build -t s57t .
 docker run -v $(pwd)/data:/data s57t s57tiler -i /data/charts/US5WA22M/US5WA22M.000 -o /data -x M_COVR,M_NPUB,M_NSYS,M_QUAL

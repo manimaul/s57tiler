@@ -70,16 +70,44 @@
       }
     },
     {
+      "id": "DEPARE_fill_2",
+      "type": "fill",
+      "source": "src_senc",
+      "source-layer": "DEPARE",
+      "filter": ["all", ["==", "$type", "Polygon"], ["<=", "DRVAL1", 9.0]],
+      "paint": {
+        "fill-color": "#B4D6E3"
+      }
+    },
+    {
+      "id": "DEPARE_fill_1",
+      "type": "fill",
+      "source": "src_senc",
+      "source-layer": "DEPARE",
+      "filter": ["all", ["==", "$type", "Polygon"], ["<=", "DRVAL1", 3.0]],
+      "paint": {
+        "fill-color": "#5EB7F4"
+      }
+    },
+    {
+      "id": "DEPARE_fill_0",
+      "type": "fill",
+      "source": "src_senc",
+      "source-layer": "DEPARE",
+      "filter": ["all", ["==", "$type", "Polygon"], ["<", "DRVAL1", 0.0], ["<=", "DRVAL2", 0.0]],
+      "paint": {
+        "fill-color": "#75B493"
+      }
+    },
+    {
       "id": "DEPARE_line",
       "type": "line",
       "source": "src_senc",
       "source-layer": "DEPARE",
-      "filter": [
-        "all"
-      ],
+      "filter": ["all", ["==", "$type", "Polygon"], [">", "DRVAL2", 0.0]],
       "paint": {
         "line-color": "#4F595B",
-        "line-width": 1
+        "line-width": 0.5
       }
     },
     {
@@ -252,7 +280,7 @@
       "paint": {
         "text-color": "#fff",
         "text-halo-color": "#000",
-        "text-halo-width": 1
+        "text-halo-width": 1.5
       }
     }
   ]
