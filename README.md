@@ -1,7 +1,7 @@
 # S57 Chart to GeoJson & Mapbox Vector Tile (MVT) Renderer
 
 The goal of this project is to render geojson and json meta data from S57 nautical chart files suitable for input to 
-tippecanoe which transforms the data into MVT / MBTiles.
+[tippecanoe](https://github.com/mapbox/tippecanoe) which transforms the data into [MVT](https://docs.mapbox.com/vector-tiles/specification/) / MBTiles.
 
 We will then serve the data with [tileserver-gl](https://github.com/maptiler/tileserver-gl) and work on styling the chart
 with [maputnik](https://github.com/maputnik/editor/wiki).
@@ -16,7 +16,10 @@ cargo run -- -i $(pwd)/data/charts/US5WA22M/US5WA22M.000 -o $(pwd)/data -n LNDAR
 docker build -t s57t .
 docker run -v $(pwd)/data:/data s57t s57tiler -i /data/charts/US5WA22M/US5WA22M.000 -o /data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
 
+# Serve up the rendered marine chart / map
 docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
+
+# Optionally fire up maputnik to work on styling
 docker run -it --rm -p 8888:8888 maputnik/editor
 ```
 
@@ -31,6 +34,10 @@ You can find a live demo here: [https://s57dev.mxmariner.com/styles/day_bright_s
  
 
 ###  Dev Setup
+
+In order to run this locally you'll need system [gdal](https://gdal.org/) installed as well as 
+[tippecanoe](https://github.com/mapbox/tippecanoe). And of course since this is rust you'll need to follow the 
+[rustup](https://rustup.rs/) guide. 
 
 MacOS
 ```shell script
@@ -49,6 +56,3 @@ sudo cp /tippecanoe/tippecanoe-decode /usr/local/bin/tippecanoe-decode
 sudo cp /tippecanoe/tippecanoe-enumerate /usr/local/bin/tippecanoe-enumerate
 sudo cp /tippecanoe/tippecanoe-json-tool /usr/local/bin/tippecanoe-json-tool
 ```
-
-[rustup](https://rustup.rs/)
-
