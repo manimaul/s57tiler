@@ -6,9 +6,7 @@ tippecanoe which transforms the data into MVT / MBTiles.
 We will then serve the data with [tileserver-gl](https://github.com/maptiler/tileserver-gl) and work on styling the chart
 with [maputnik](https://github.com/maputnik/editor/wiki).
 
-Note: This project is still a WIP. I plan additionally creating an open source S57 theme based on 
-[OpenCPN data](https://raw.githubusercontent.com/OpenCPN/OpenCPN/master/data/s57data/chartsymbols.xml). The theme will
-be published in a TDB Github repo.
+Note: This project is still very much a *WORK IN PROGRESS*.
 
 ### Example
 

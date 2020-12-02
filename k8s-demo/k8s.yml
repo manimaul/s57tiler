@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mxmarinerdev
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: mxmarinerdev-chart-scaler
+spec:
+  scaleTargetRef:
+    kind: ReplicaSet
+    name: mxmarinerdev-chart-dep
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 50
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mxmarinerdev-chart-svc
+  namespace: mxmarinerdev
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+  selector:
+    app: mxmarinerdev-chart-svc
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mxmarinerdev-chart-deb
+  namespace: mxmarinerdev
+spec:
+  selector:
+    matchLabels:
+      app: mxmarinerdev-chart-svc
+  template:
+    metadata:
+      labels:
+        app: mxmarinerdev-chart-svc
+    spec:
+      containers:
+        - image: manimaul/us5wa22m:latest
+          imagePullPolicy: Always
+          name: mxmarinerdev-chart-svc
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              cpu: 100m
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    haproxy.org/request-set-header: "l5d-dst-override mxmarinerdev-chart-svc.mxmariner.svc.cluster.local:80"
+    haproxy.org/ssl-redirect: "true" # https://www.haproxy.com/documentation/kubernetes/latest/configuration/ingress/
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  name: devchart-mxmarineringress
+  namespace: mxmarinerdev
+spec:
+  rules:
+    - host: s57dev.mxmariner.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: mxmarinerdev-chart-svc
+              servicePort: 80
+  tls:
+    - hosts:
+        - s57dev.mxmariner.com
+      secretName: devchart-mxmariner-cert
+---
