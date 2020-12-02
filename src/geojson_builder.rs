@@ -63,7 +63,11 @@ fn field_value_to_json_value(fv: &FieldValue) -> Option<Value> {
             }
         },
         FieldValue::RealValue(v) => Some(Value::Number(Number::from_f64(v.clone()).unwrap())),
+        FieldValue::RealListValue(v) => Some(Value::Array(v.iter().map(|ea|Value::Number(Number::from_f64(ea.clone()).unwrap())).collect())),
         FieldValue::Integer64Value(v) => Some(Value::Number(Number::from(v.clone()))),
+        FieldValue::IntegerListValue(v) => Some(Value::Array(v.iter().map(|ea|Value::Number(Number::from(ea.clone()))).collect())),
+        FieldValue::Integer64ListValue(v) => Some(Value::Array(v.iter().map(|ea|Value::Number(Number::from(ea.clone()))).collect())),
+        FieldValue::StringListValue(v) => Some(Value::Array(v.iter().map(|ea|Value::String(ea.clone())).collect())),
         // FieldValue::DateValue(_) => Value::String(String::from("")),
         // FieldValue::DateTimeValue(_) => Value::String(String::from(""))
     }

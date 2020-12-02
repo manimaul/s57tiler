@@ -260,15 +260,47 @@
         "text-font": [
           "Roboto Bold"
         ],
-        "text-offset": [
-          0,
-          1.25
-        ],
         "text-anchor": "center",
         "text-justify": "center",
         "text-field": [
           "get",
           "SOUNDG"
+        ],
+        "text-allow-overlap": true,
+        "text-ignore-placement": true,
+        "text-max-width": 9,
+        "text-size": 10,
+        "text-padding": 6,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-color": "#fff",
+        "text-halo-color": "#000",
+        "text-halo-width": 1.5
+      }
+    },
+    {
+      "id": "BOYSPP_point",
+      "type": "symbol",
+      "source": "src_senc",
+      "source-layer": "BOYSPP",
+      "filter": [
+        "any",
+        [
+          "==",
+          "$type",
+          "Point"
+        ]
+      ],
+      "layout": {
+        "text-font": [
+          "Roboto Bold"
+        ],
+        "text-anchor": "center",
+        "text-justify": "center",
+        "text-field": [
+          "get",
+          "OBJNAM"
         ],
         "text-allow-overlap": true,
         "text-ignore-placement": true,

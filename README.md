@@ -13,10 +13,10 @@ be published in a TDB Github repo.
 ### Example
 
 ```shell script
-cargo run -- -g -i $HOME/Charts/ENC_ROOT/US5WA22M/US5WA22M.000 -o $HOME/source/madrona/s57tiler/data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG
+cargo run -- -i $(pwd)/data/charts/US5WA22M/US5WA22M.000 -o $(pwd)/data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
 #OR
 docker build -t s57t .
-docker run -v $(pwd)/data:/data s57t s57tiler -i /data/charts/US5WA22M/US5WA22M.000 -o /data -x M_COVR,M_NPUB,M_NSYS,M_QUAL
+docker run -v $(pwd)/data:/data s57t s57tiler -i /data/charts/US5WA22M/US5WA22M.000 -o /data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
 
 docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
 docker run -it --rm -p 8888:8888 maputnik/editor
