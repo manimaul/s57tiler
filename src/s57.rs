@@ -6,6 +6,7 @@ use crate::geojson_builder::feature_collection_from_layer;
 use gdal::spatial_ref::SpatialRef;
 use std::process::Command;
 use std::collections::HashSet;
+use crate::utils;
 
 
 pub struct S57 {
@@ -18,19 +19,14 @@ impl S57 {
     }
 
     pub fn render_geojson(
-        &self, out_dir:
-        &Path, pretty: bool,
+        &self,
+        out_dir: &Path,
+        pretty: bool,
         ex_layers: Option<Vec<&str>>,
         in_layers: Option<Vec<&str>>,
     ) -> Vec<String> {
         println!("rendering geojson to: {:?}", out_dir);
-        if !out_dir.exists() {
-            println!("creating directory: {:?}", out_dir);
-            fs::create_dir_all(out_dir).ok();
-        } else if !out_dir.is_dir() {
-            let error = format!("{:?} exists and is not a directory", out_dir);
-            panic!(error);
-        }
+        utils::check_out_dir(out_dir);
 
         let mut names: Vec<String> = vec![];
         let target_sr = SpatialRef::from_epsg(4326).unwrap();
@@ -62,13 +58,13 @@ impl S57 {
                 } else {
                     fc.to_string()
                 };
-                Self::write_json(out_dir, layer_json.as_str(), &geo_json);
+                utils::write_json(out_dir, layer_json.as_str(), &geo_json);
             };
         }
         let meta = serde_json::json!({
             "layers": names
         });
-        Self::write_json(out_dir, "meta.json", &serde_json::to_string_pretty(&meta).unwrap());
+        utils::write_json(out_dir, "meta.json", &serde_json::to_string_pretty(&meta).unwrap());
         return names;
     }
 
@@ -90,15 +86,5 @@ impl S57 {
             .expect("failed to execute process");
         println!("{}", std::str::from_utf8(output.stdout.as_slice()).unwrap());
         println!("{}", std::str::from_utf8(output.stderr.as_slice()).unwrap());
-    }
-
-    fn write_json(out_dir: &Path, name: &str, contents: &String) {
-        let mut json_out_path = PathBuf::from(out_dir);
-        json_out_path.push(name);
-        println!("writing to - {}", json_out_path.to_str().unwrap());
-        if json_out_path.exists() {
-            fs::remove_file(&json_out_path).ok();
-        }
-        fs::write(&json_out_path, contents).ok();
     }
 }

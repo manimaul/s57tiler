@@ -6,6 +6,9 @@ use gdal::spatial_ref::SpatialRef;
 
 type JsonObject = Map<String, Value>;
 static SOUNDG: &str = "SOUNDG";
+static SOUNDGT: &str = "SOUNDGT";
+static SOUNDG_FT: &str = "SOUNDG_FT";
+static SOUNDG_FTT: &str = "SOUNDG_FTT";
 
 fn gdal_feature_to_geojson_feature(
     feature: &gdal::vector::Feature,
@@ -27,11 +30,17 @@ fn gdal_feature_to_geojson_feature(
                         if is_sounding {
                             if let geojson::Value::Point(position) = &geojson_geom.value {
                                 let mut points = position.clone();
-                                let depth = points[2];
+                                let depth_meters = points[2];
+                                let depth_m = depth_meters as i64;
+                                let depth_m_t = ((depth_meters - (depth_m as f64)) * 10_f64) as i64;
+                                let depth_feet = depth_meters * 3.28084_f64;
+                                let depth_f = depth_feet as i64;
+                                let depth_f_t = ((depth_feet - (depth_f as f64)) * 10_f64) as i64;
                                 points.drain(2..3);
-                                //println!("sounding points {:?}", points);
-                                //println!("sounding depth {:?}", depth);
-                                properties.insert(String::from(SOUNDG), json!(depth));
+                                properties.insert(String::from(SOUNDG), json!(depth_m));
+                                properties.insert(String::from(SOUNDGT), json!(depth_m_t));
+                                properties.insert(String::from(SOUNDG_FT), json!(depth_f));
+                                properties.insert(String::from(SOUNDG_FTT), json!(depth_f_t));
                                 return geojson::Geometry::new(geojson::Value::Point(points))
                             }
                         }

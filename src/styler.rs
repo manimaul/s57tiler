@@ -1,21 +1,74 @@
+use std::path::Path;
+use crate::utils;
+use serde_json::json;
+
+/// https://tileserver.readthedocs.io/en/latest/config.html
+pub fn create_config(
+    out_dir: &Path,
+    domain_list: Vec<String>
+) {
+    utils::check_out_dir(out_dir);
+    let config_json = json!(
+{
+  "options": {
+    "paths": {
+      "root": "",
+      "fonts": "fonts",
+      "sprites": "sprites",
+      "styles": "styles",
+      "mbtiles": ""
+    },
+    "domains": domain_list,
+    "formatQuality": {
+      "jpeg": 80,
+      "webp": 90
+    },
+    "maxScaleFactor": 3,
+    "maxSize": 2048,
+    "pbfAlias": "pbf",
+    "serveAllFonts": true,
+    "serveAllStyles": true,
+    "serveStaticMaps": true,
+    "tileMargin": 0
+  },
+  "data": {
+    "marine-chart": {
+      "mbtiles": "chart.mbtiles"
+    }
+  },
+  "styles": {
+    "basic": {
+      "day_bright_style": "day_bright_style.json",
+      "serve_rendered": true,
+      "serve_data": true,
+      // "tilejson": {
+      //   "format": "vector"
+      // }
+    }
+  }
+}
+    );
+    utils::write_json(out_dir, "config.json", &config_json.to_string());
+}
+
+/// https://docs.mapbox.com/mapbox-gl-js/style-spec/
+pub fn create_style(
+    out_dir: &Path,
+    base_url: &String,
+) {
+    utils::check_out_dir(out_dir);
+    let style_json = json!(
 {
   "version": 8,
   "name": "Day Bright",
-  "center": [
-    -122.40967,
-    47.26432,
-    13.0
-  ],
-  "zoom": 10.426085190067841,
-  "bearing": 0,
-  "pitch": 0,
   "sources": {
     "src_senc": {
       "type": "vector",
-      "url": "http://localhost:8080/data/tacoma-commencement-bay.json"
+      "url": format!("{}/data/marine-chart.json", base_url)
     }
   },
-  "glyphs": "http://localhost:8080/fonts/{fontstack}/{range}.pbf",
+  "sprite": "rastersymbols-day",
+  "glyphs": format!("{}/fonts/{{fontstack}}/{{range}}.pbf", base_url),
   "layers": [
     {
       "id": "background",
@@ -260,12 +313,9 @@
         "text-font": [
           "Roboto Bold"
         ],
-        "text-anchor": "center",
+        "text-anchor": "bottom-right",
         "text-justify": "center",
-        "text-field": [
-          "get",
-          "SOUNDG"
-        ],
+        "text-field": ["get", "SOUNDG_FT"],
         "text-allow-overlap": true,
         "text-ignore-placement": true,
         "text-max-width": 9,
@@ -277,6 +327,39 @@
         "text-color": "#fff",
         "text-halo-color": "#000",
         "text-halo-width": 1.5
+      }
+    },
+    {
+      "id": "SOUNDGT_txt",
+      "type": "symbol",
+      "source": "src_senc",
+      "source-layer": "SOUNDG",
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "Point"
+        ],
+        [ "!=", "SOUNDG_FTT", 0]
+      ],
+      "layout": {
+        "text-font": [
+          "Roboto Bold"
+        ],
+        "text-anchor": "top-left",
+        "text-offset": [0.1, -0.7],
+        "text-justify": "center",
+        "text-field": ["get", "SOUNDG_FTT"],
+        "text-allow-overlap": true,
+        "text-ignore-placement": true,
+        "text-max-width": 9,
+        "text-size": 10,
+        "text-padding": 6,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-color": "#000"
       }
     },
     {
@@ -316,4 +399,7 @@
       }
     }
   ]
+}
+    );
+    utils::write_json(out_dir, "day_bright_style.json", &style_json.to_string());
 }

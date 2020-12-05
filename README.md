@@ -11,10 +11,14 @@ Note: This project is still very much a *WORK IN PROGRESS*.
 ### Example
 
 ```shell script
-cargo run -- -i $(pwd)/data/charts/US5WA22M/US5WA22M.000 -o $(pwd)/data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
+cargo run -- mbtiles -i $(pwd)/data/charts/US5WA22M/US5WA22M.000 -o $(pwd)/data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
+cargo run -- config -o $(pwd)/data -s localhost:8080,127.0.0.1:8080
+cargo run -- style -o $(pwd)/data/styles -s 127.0.0.1:8080
+docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
+
 #OR
 docker build -t s57t .
-docker run -v $(pwd)/data:/data s57t s57tiler -i /data/charts/US5WA22M/US5WA22M.000 -o /data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
+docker run -v $(pwd)/data:/data s57t s57tiler mbtiles -i /data/charts/US5WA22M/US5WA22M.000 -o /data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
 
 # Serve up the rendered marine chart / map
 docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
