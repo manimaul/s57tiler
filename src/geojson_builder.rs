@@ -5,10 +5,43 @@ use serde_json;
 use gdal::spatial_ref::SpatialRef;
 
 type JsonObject = Map<String, Value>;
+
 static SOUNDG: &str = "SOUNDG";
-static SOUNDGT: &str = "SOUNDGT";
-static SOUNDG_FT: &str = "SOUNDG_FT";
-static SOUNDG_FTT: &str = "SOUNDG_FTT";
+static FEET: &str = "FEET";
+static FATHOMS: &str = "FATHOMS";
+static FATHOMS_FT: &str = "FATHOMS_FT";
+static METERS: &str = "METERS";
+
+struct Sounding {
+    feet_display: i64,
+    fathoms_display: i64,
+    fathoms_feet_display: i64,
+    meters_display: i64,
+}
+
+impl Sounding {
+
+    fn from(depth_meters: f64) -> Sounding {
+        let meters_display = depth_meters as i64;
+        let feet_display = (depth_meters * 3.28084_f64) as i64;
+        let fathoms = depth_meters * 0.546807_f64;
+        let fathoms_display = fathoms as i64;
+        let fathoms_feet_display = ((fathoms - (fathoms_display as f64)) * 6_f64) as i64;
+        Sounding {
+            feet_display,
+            fathoms_display,
+            fathoms_feet_display,
+            meters_display,
+        }
+    }
+
+    fn insert_into(&self, properties: &mut JsonObject) {
+        properties.insert(String::from(FEET), json!(self.feet_display));
+        properties.insert(String::from(FATHOMS), json!(self.fathoms_display));
+        properties.insert(String::from(FATHOMS_FT), json!(self.fathoms_feet_display));
+        properties.insert(String::from(METERS), json!(self.meters_display));
+    }
+}
 
 fn gdal_feature_to_geojson_feature(
     feature: &gdal::vector::Feature,
@@ -30,17 +63,10 @@ fn gdal_feature_to_geojson_feature(
                         if is_sounding {
                             if let geojson::Value::Point(position) = &geojson_geom.value {
                                 let mut points = position.clone();
+                                //https://iho.int/uploads/user/pubs/standards/s-57/20ApB1.pdf
                                 let depth_meters = points[2];
-                                let depth_m = depth_meters as i64;
-                                let depth_m_t = ((depth_meters - (depth_m as f64)) * 10_f64) as i64;
-                                let depth_feet = depth_meters * 3.28084_f64;
-                                let depth_f = depth_feet as i64;
-                                let depth_f_t = ((depth_feet - (depth_f as f64)) * 10_f64) as i64;
+                                Sounding::from(depth_meters).insert_into(&mut properties);
                                 points.drain(2..3);
-                                properties.insert(String::from(SOUNDG), json!(depth_m));
-                                properties.insert(String::from(SOUNDGT), json!(depth_m_t));
-                                properties.insert(String::from(SOUNDG_FT), json!(depth_f));
-                                properties.insert(String::from(SOUNDG_FTT), json!(depth_f_t));
                                 return geojson::Geometry::new(geojson::Value::Point(points))
                             }
                         }
@@ -108,4 +134,19 @@ pub fn feature_collection_from_layer(layer: &gdal::vector::Layer, target_sr: &Sp
             foreign_members: None,
         })
     }
+}
+
+#[test]
+fn test_soundings() {
+    let mut subject = Sounding::from(0.9);
+    assert_eq!(0_i64, subject.meters_display);
+    assert_eq!(2_i64, subject.feet_display); //2.95276 ft
+    assert_eq!(0_i64, subject.fathoms_display); //0.492126 fathoms
+    assert_eq!(2_i64, subject.fathoms_feet_display); //0.492126 fathoms
+
+    subject = Sounding::from(297.7);
+    assert_eq!(297_i64, subject.meters_display);
+    assert_eq!(976_i64, subject.feet_display); //976.70604 ft
+    assert_eq!(162_i64, subject.fathoms_display); //162.78434 fathoms
+    assert_eq!(4_i64, subject.fathoms_feet_display); //4.70604 fathoms
 }

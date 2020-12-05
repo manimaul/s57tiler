@@ -7,6 +7,7 @@ use gdal::spatial_ref::SpatialRef;
 use std::process::Command;
 use std::collections::HashSet;
 use crate::utils;
+use std::ffi::CString;
 
 
 pub struct S57 {
@@ -15,6 +16,13 @@ pub struct S57 {
 
 impl S57 {
     pub fn open(path: &Path) -> Option<S57> {
+        let key = CString::new("OGR_S57_OPTIONS").unwrap();
+        // https://gdal.org/drivers/vector/s57.html
+        let value = CString::new("SPLIT_MULTIPOINT:ON,ADD_SOUNDG_DEPTH=OFF,UPDATES=APPLY,LIST_AS_STRING=OFF").unwrap();
+        unsafe {
+            gdal_sys::GDALAllRegister();
+            gdal_sys::CPLSetConfigOption(key.as_ptr(), value.as_ptr());
+        }
         Dataset::open(path).map(|ds| S57 { dataset: ds }).ok()
     }
 

@@ -4,8 +4,6 @@ mod styler;
 mod utils;
 
 use std::path::Path;
-use gdal_sys;
-use std::ffi::CString;
 
 extern crate clap;
 
@@ -119,19 +117,14 @@ fn mbtiles(matches: &ArgMatches) {
     let layer_ex = matches.value_of("layer_ex").map(|ex| ex.split(",").collect::<Vec<&str>>());
     let layer_in = matches.value_of("layer_in").map(|ex| ex.split(",").collect::<Vec<&str>>());
     let keep_geojson = matches.is_present("keep_geojson");
-
-    let key = CString::new("OGR_S57_OPTIONS").unwrap();
-    // https://gdal.org/drivers/vector/s57.html
-    let value = CString::new("SPLIT_MULTIPOINT:ON,ADD_SOUNDG_DEPTH=OFF,UPDATES=APPLY,LIST_AS_STRING=OFF").unwrap();
-    unsafe {
-        gdal_sys::GDALAllRegister();
-        gdal_sys::CPLSetConfigOption(key.as_ptr(), value.as_ptr());
-    }
-
     let s57 = s57::S57::open(Path::new(in_file)).unwrap();
-    let files = s57.render_geojson(Path::new(out_dir), false, layer_ex, layer_in);
+    let files = s57.render_geojson(
+        Path::new(out_dir),
+        false,
+        layer_ex,
+        layer_in,
+    );
     s57::S57::generate_mbtiles(Path::new(out_dir), &files);
-
     if !keep_geojson {
         files.iter()
             .map(|f| Path::new(f))
