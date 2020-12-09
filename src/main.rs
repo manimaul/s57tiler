@@ -1,7 +1,9 @@
+#![recursion_limit="256"]
 mod s57;
 mod geojson_builder;
 mod styler;
 mod utils;
+mod colors;
 
 use std::path::Path;
 
