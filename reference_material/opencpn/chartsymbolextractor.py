@@ -1,0 +1,100 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# by Will Kamp <manimaul!gmail.com>
+# use this anyway you want
+
+from xml.dom.minidom import parseString
+import os
+import json
+
+f = open("chartsymbols.xml", "r")
+lines = f.read()
+f.close()
+
+script_dir = os.path.dirname(os.path.realpath(__file__))
+
+"""
+tables:
+<color-tables>, <lookups>, <line-styles>, <patterns>, <symbols>
+
+Notes:
+
+<lookup id="345" RCID="32380" name="AIRARE">
+    <type>Area</type>
+    <disp-prio>Area 1</disp-prio>
+    <radar-prio>Suppressed</radar-prio>
+    <table-name>Symbolized</table-name>
+    <attrib-code index="0">CONVIS1</attrib-code>
+    <instruction>AC(LANDA);AP(AIRARE02);LS(SOLD,1,CHBLK)</instruction>
+    <display-cat>Standard</display-cat>
+    <comment>22220</comment>
+</lookup>
+
+<type> = can be Area, Line, Point
+
+
+<table-name> Plain, Lines, Simplified, Paper
+
+<attrib-code index="0">
+index can be 0,1,2,3
+$SCODEAISSLP01 "AISSLP01" = this might reference the description of a symbol in the <symbols> table
+
+
+<display-cat>
+Standard, DisplayBase Other, Mariners
+
+<instruction>
+; delimeted 
+SY = symbol
+    example: SY(PLNPOS02,ORIENT)
+    
+TX = text
+
+CS = this looks like it references functions in s52cnsy.cpp
+https://github.com/OpenCPN/OpenCPN/blob/6acf43c93a71463be907f228f7175bf906ad019e/src/s52cnsy.cpp
+
+"""
+
+
+def read_sprites():
+    dom = parseString(lines)
+    result = dict()
+    for symbol in dom.getElementsByTagName("symbol"):
+        name = symbol.getElementsByTagName("name")[0].firstChild.nodeValue
+        btmEle = symbol.getElementsByTagName("bitmap")
+        if len(btmEle) > 0:
+            locEle = btmEle[0].getElementsByTagName("graphics-location")
+            width = int(btmEle[0].attributes["width"].value)
+            height = int(btmEle[0].attributes["height"].value)
+            x = locEle[0].attributes["x"].value
+            y = locEle[0].attributes["y"].value
+            result[name] = {
+                "width": int(width),
+                "height": int(height),
+                "x": int(x),
+                "y": int(y),
+                "pixelRatio": 1
+            }
+    print(json.dumps(result, indent=2))
+
+
+def read_colors():
+    dom = parseString(lines)
+    result = dict()
+    for col_table in dom.getElementsByTagName("color-table"):
+        name = col_table.attributes["name"].value
+        col_list = dict()
+        result[name] = col_list
+        for child in col_table.getElementsByTagName("color"):
+            col_name = child.attributes["name"].value
+            r = int(child.attributes["r"].value)
+            g = int(child.attributes["g"].value)
+            b = int(child.attributes["b"].value)
+            color_rgb = (r, g, b)
+            hex_color = '#{:02x}{:02x}{:02x}'.format(*color_rgb)
+            col_list[col_name] = hex_color
+    print(json.dumps(result, indent=2))
+
+
+if __name__ == '__main__':
+    read_sprites()
