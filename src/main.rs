@@ -1,9 +1,13 @@
 #![recursion_limit="256"]
+#[macro_use]
+extern crate lazy_static;
+
 mod s57;
 mod geojson_builder;
 mod styler;
 mod utils;
 mod colors;
+mod soundg;
 
 use std::path::Path;
 

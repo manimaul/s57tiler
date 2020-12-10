@@ -1,5 +1,5 @@
 use std::path::Path;
-use crate::utils;
+use crate::{utils, soundg};
 use crate::colors;
 use serde_json::json;
 use serde_json::Value;
@@ -52,7 +52,7 @@ pub fn create_style(
 ) {
     utils::check_out_dir(out_dir);
     for depth in depths() {
-        for color in colors::color_keys() {
+        for color in colors::COLOR_KEYS.iter() {
             let style_json = create_substyle(&base_url, &depth, &color);
             utils::write_json(out_dir, format!("{}_{}_style.json", color, depth).as_str(), &style_json.to_string());
         }
@@ -75,130 +75,18 @@ fn create_substyle(base_url: &String, depth: &String, color: &String) -> Value {
     return json_style;
 }
 
-fn depth_layers(depth: &String) -> Vec<Value> {
-    match depth.as_str() {
-        "fathoms" => vec![
-            json!({
-              "id": "fathoms",
-              "type": "symbol",
-              "source": "src_senc",
-              "source-layer": "SOUNDG",
-              "filter": [ "any", [ "==", "$type", "Point" ], ],
-              "layout": {
-                "text-font": [ "Roboto Bold" ],
-                "text-anchor": "bottom-right",
-                "text-justify": "center",
-                "text-field": ["get", "FATHOMS"],
-                "text-allow-overlap": true,
-                "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
-                "symbol-placement": "point"
-              },
-              "paint": {
-                "text-color": "#fff",
-                "text-halo-color": "#000",
-                "text-halo-width": 1.5
-              }
-            }),
-            json!({
-              "id": "fathoms_feet",
-              "type": "symbol",
-              "source": "src_senc",
-              "source-layer": "SOUNDG",
-              "filter": [
-                "all",
-                [ "==", "$type", "Point" ],
-                [ "!=", "FATHOMS_FT", 0]
-              ],
-              "layout": {
-                "text-font": [
-                  "Roboto Bold"
-                ],
-                "text-anchor": "top-left",
-                "text-offset": [0.1, -0.7],
-                "text-justify": "center",
-                "text-field": ["get", "FATHOMS_FT"],
-                "text-allow-overlap": true,
-                "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
-                "symbol-placement": "point"
-              },
-              "paint": {
-                "text-color": "#000"
-              }
-            })
-        ],
-        "feet" => vec![
-            json!({
-              "id": "feet",
-              "type": "symbol",
-              "source": "src_senc",
-              "source-layer": "SOUNDG",
-              "filter": [ "any", [ "==", "$type", "Point" ], ],
-              "layout": {
-                "text-font": [ "Roboto Bold" ],
-                "text-anchor": "center",
-                "text-justify": "center",
-                "text-field": ["get", "FEET"],
-                "text-allow-overlap": true,
-                "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
-                "symbol-placement": "point"
-              },
-              "paint": {
-                "text-color": "#fff",
-                "text-halo-color": "#000",
-                "text-halo-width": 1.5
-              }
-            })
-        ],
-        "meters" | _ => vec![
-            json!({
-              "id": "feet",
-              "type": "symbol",
-              "source": "src_senc",
-              "source-layer": "SOUNDG",
-              "filter": [ "any", [ "==", "$type", "Point" ], ],
-              "layout": {
-                "text-font": [ "Roboto Bold" ],
-                "text-anchor": "center",
-                "text-justify": "center",
-                "text-field": ["get", "METERS"],
-                "text-allow-overlap": true,
-                "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
-                "symbol-placement": "point"
-              },
-              "paint": {
-                "text-color": "#fff",
-                "text-halo-color": "#000",
-                "text-halo-width": 1.5
-              }
-            })
-        ]
-    }
-}
-
 fn style_layers(depth: &String, color: &String) -> Value {
     let colors = match color.as_str() {
-        "dusk" => colors::colors()["DUSK"].clone(),
-        "dark" => colors::colors()["NIGHT"].clone(),
-        _ => colors::colors()["DAY_BRIGHT"].clone(),
+        "dusk" => colors::COLORS["DUSK"].clone(),
+        "dark" => colors::COLORS["NIGHT"].clone(),
+        _ => colors::COLORS["DAY_BRIGHT"].clone(),
     };
     let mut value = json!([
     {
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "#000",
+        "background-color": *colors::BG,
         "background-opacity": 1
       }
     },
@@ -261,7 +149,6 @@ fn style_layers(depth: &String, color: &String) -> Value {
       "filter": ["all", ["==", "$type", "Polygon"], ["<=", "DRVAL1", 3.0]],
       "paint": {
         "fill-color": colors["DEPVS"]
-      //   blue 5EB7F4
       }
     },
     {
@@ -272,7 +159,6 @@ fn style_layers(depth: &String, color: &String) -> Value {
       "filter": ["all", ["==", "$type", "Polygon"], ["<", "DRVAL1", 0.0], ["<=", "DRVAL2", 0.0]],
       "paint": {
         "fill-color": colors["DEPIT"]
-        // green 75B493
       }
     },
     {
@@ -412,14 +298,14 @@ fn style_layers(depth: &String, color: &String) -> Value {
         "symbol-placement": "point"
       },
       "paint": {
-        "text-color": "#fff",
-        "text-halo-color": "#000",
+        "text-color": *colors::TXT_FG,
+        "text-halo-color": *colors::TXT_BG,
         "text-halo-width": 1.5
       }
     }
     ]);
     if let Value::Array(ref mut items) = value {
-        let mut depth_rules = depth_layers(&depth);
+        let mut depth_rules = soundg::layers(&depth);
         items.append(&mut depth_rules);
     };
     return value;
