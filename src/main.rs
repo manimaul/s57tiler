@@ -11,6 +11,7 @@ mod soundg;
 mod seaare;
 mod depare;
 mod depcnt;
+mod boyspp;
 
 use std::path::Path;
 

@@ -1,5 +1,4 @@
 use serde_json::{Value, json};
-use crate::colors;
 
 /// Sea Area, SEAARE
 /// Geometric primitives: Point, Area
@@ -32,7 +31,7 @@ pub fn layers(colors: &Value) -> Vec<Value> {
             ]
           ],
           "paint": {
-            "fill-color": colors["DEPMD"]
+            "fill-color": colors["CHWHT"]
           }
         }),
         // json!({

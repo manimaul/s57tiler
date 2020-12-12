@@ -1,5 +1,5 @@
 use std::path::Path;
-use crate::{utils, soundg, seaare, depare, depcnt};
+use crate::{utils, soundg, seaare, depare, depcnt, boyspp};
 use crate::colors;
 use serde_json::json;
 use serde_json::Value;
@@ -97,6 +97,7 @@ fn style_layers(depth: &String, color: &String) -> Value {
         items.append(&mut depcnt::layers(&colors));
         items.append(&mut todo_layers(&colors));
         items.append(&mut soundg::layers(&depth));
+        items.append(&mut boyspp::layers());
     };
     return value;
 }
@@ -206,30 +207,6 @@ fn todo_layers(colors: &Value) -> Vec<Value> {
             "paint": {
                 "line-color": colors["CSTLN"],
                 "line-width": 2
-            }
-        }),
-        json!({
-            "id": "BOYSPP_point",
-            "type": "symbol",
-            "source": "src_senc",
-            "source-layer": "BOYSPP",
-            "filter": [ "any", [ "==", "$type", "Point" ] ],
-            "layout": {
-                "text-font": [ "Roboto Bold" ],
-                "text-anchor": "center",
-                "text-justify": "center",
-                "text-field": [ "get", "OBJNAM" ],
-                "text-allow-overlap": true,
-                "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
-                "symbol-placement": "point"
-            },
-            "paint": {
-                "text-color": *colors::TXT_FG,
-                "text-halo-color": *colors::TXT_BG,
-                "text-halo-width": 1.5
             }
         })
     ]
