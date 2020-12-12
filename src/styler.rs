@@ -1,5 +1,5 @@
 use std::path::Path;
-use crate::{utils, soundg};
+use crate::{utils, soundg, seaare, depare, depcnt};
 use crate::colors;
 use serde_json::json;
 use serde_json::Value;
@@ -89,224 +89,148 @@ fn style_layers(depth: &String, color: &String) -> Value {
         "background-color": *colors::BG,
         "background-opacity": 1
       }
-    },
-    {
-      "id": "SEAARE_fill",
-      "type": "fill",
-      "source": "src_senc",
-      "source-layer": "SEAARE",
-      "filter": [
-        "any",
-        [
-          "==",
-          "$type",
-          "Polygon"
-        ]
-      ],
-      "paint": {
-        "fill-color": "#CEEAEE"
-      }
-    },
-    {
-      "id": "SEAARE_line",
-      "type": "line",
-      "source": "src_senc",
-      "source-layer": "SEAARE",
-      "filter": [
-        "any",
-        [
-          "==",
-          "$type",
-          "Polygon"
-        ],
-        [
-          "==",
-          "$type",
-          "LineString"
-        ]
-      ],
-      "paint": {
-        "line-color": colors["CHMGF"], //todo: (this is not correct) this is the color for "achare"
-        "line-dasharray": [ 4, 2 ],
-        "line-width": 1.5
-      }
-    },
-    {
-      "id": "DEPARE_fill_2",
-      "type": "fill",
-      "source": "src_senc",
-      "source-layer": "DEPARE",
-      "filter": ["all", ["==", "$type", "Polygon"], ["<=", "DRVAL1", 9.0]],
-      "paint": {
-        "fill-color": "#B4D6E3"
-      }
-    },
-    {
-      "id": "DEPARE_fill_1",
-      "type": "fill",
-      "source": "src_senc",
-      "source-layer": "DEPARE",
-      "filter": ["all", ["==", "$type", "Polygon"], ["<=", "DRVAL1", 3.0]],
-      "paint": {
-        "fill-color": colors["DEPVS"]
-      }
-    },
-    {
-      "id": "DEPARE_fill_0",
-      "type": "fill",
-      "source": "src_senc",
-      "source-layer": "DEPARE",
-      "filter": ["all", ["==", "$type", "Polygon"], ["<", "DRVAL1", 0.0], ["<=", "DRVAL2", 0.0]],
-      "paint": {
-        "fill-color": colors["DEPIT"]
-      }
-    },
-    {
-      "id": "DEPARE_line",
-      "type": "line",
-      "source": "src_senc",
-      "source-layer": "DEPARE",
-      "filter": ["all", ["==", "$type", "Polygon"], [">", "DRVAL2", 0.0]],
-      "paint": {
-        "line-color": colors["CSTLN"],
-        "line-width": 0.5
-      }
-    },
-    {
-      "id": "SLCONS_line",
-      "type": "line",
-      "source": "src_senc",
-      "source-layer": "SLCONS",
-      "filter": [
-        "all"
-      ],
-      "paint": {
-        "line-color": colors["CSTLN"],
-        "line-width": 1
-      }
-    },
-    {
-      "id": "PONTON_fill",
-      "type": "fill",
-      "source": "src_senc",
-      "source-layer": "PONTON",
-      "filter": [ "all", [ "==", "$type", "Polygon" ] ],
-      "paint": {
-        "fill-color": "#B7911F"
-      }
-    },
-    {
-      "id": "PONTON_line",
-      "type": "line",
-      "source": "src_senc",
-      "source-layer": "PONTON",
-      "filter": [ "any", [ "==", "$type", "Polygon" ], [ "==", "$type", "LineString" ] ],
-      "paint": {
-        "line-color": colors["CSTLN"],
-        "line-width": 1
-      }
-    },
-    {
-      "id": "HULKES_fill",
-      "type": "fill",
-      "source": "src_senc",
-      "source-layer": "HULKES",
-      "filter": [ "any", [ "==", "$type", "Polygon" ] ],
-      "paint": {
-        "fill-color": "#B7911F"
-      }
-    },
-    {
-      "id": "HULKES_line",
-      "type": "line",
-      "source": "src_senc",
-      "source-layer": "HULKES",
-      "filter": [
-        "any",
-        [
-          "==",
-          "$type",
-          "Polygon"
-        ],
-        [
-          "==",
-          "$type",
-          "LineString"
-        ]
-      ],
-      "paint": {
-        "line-color": colors["CSTLN"],
-        "line-width": 1.5
-      }
-    },
-    {
-      "id": "LNDARE_fill",
-      "type": "fill",
-      "source": "src_senc",
-      "source-layer": "LNDARE",
-      "filter": [
-        "any",
-        [
-          "==",
-          "$type",
-          "Polygon"
-        ]
-      ],
-      "paint": {
-        "fill-color": colors["LANDA"]
-      }
-    },
-    {
-      "id": "LNDARE_line",
-      "type": "line",
-      "source": "src_senc",
-      "source-layer": "LNDARE",
-      "filter": [
-        "any",
-        [
-          "==",
-          "$type",
-          "Polygon"
-        ],
-        [
-          "==",
-          "$type",
-          "LineString"
-        ]
-      ],
-      "paint": {
-        "line-color": colors["CSTLN"],
-        "line-width": 2
-      }
-    },
-    {
-      "id": "BOYSPP_point",
-      "type": "symbol",
-      "source": "src_senc",
-      "source-layer": "BOYSPP",
-      "filter": [ "any", [ "==", "$type", "Point" ] ],
-      "layout": {
-        "text-font": [ "Roboto Bold" ],
-        "text-anchor": "center",
-        "text-justify": "center",
-        "text-field": [ "get", "OBJNAM" ],
-        "text-allow-overlap": true,
-        "text-ignore-placement": true,
-        "text-max-width": 9,
-        "text-size": 10,
-        "text-padding": 6,
-        "symbol-placement": "point"
-      },
-      "paint": {
-        "text-color": *colors::TXT_FG,
-        "text-halo-color": *colors::TXT_BG,
-        "text-halo-width": 1.5
-      }
     }
     ]);
     if let Value::Array(ref mut items) = value {
-        let mut depth_rules = soundg::layers(&depth);
-        items.append(&mut depth_rules);
+        items.append(&mut seaare::layers(&colors));
+        items.append(&mut depare::layers(&colors));
+        items.append(&mut depcnt::layers(&colors));
+        items.append(&mut todo_layers(&colors));
+        items.append(&mut soundg::layers(&depth));
     };
     return value;
+}
+
+fn todo_layers(colors: &Value) -> Vec<Value> {
+    vec![
+        json!({
+            "id": "SLCONS_line",
+            "type": "line",
+            "source": "src_senc",
+            "source-layer": "SLCONS",
+            "filter": [ "all" ],
+            "paint": {
+                "line-color": colors["CSTLN"],
+                "line-width": 1
+            }
+        }),
+        json!({
+            "id": "PONTON_fill",
+            "type": "fill",
+            "source": "src_senc",
+            "source-layer": "PONTON",
+            "filter": [ "all", [ "==", "$type", "Polygon" ] ],
+            "paint": {
+                "fill-color": "#B7911F"
+            }
+        }),
+        json!({
+            "id": "PONTON_line",
+            "type": "line",
+            "source": "src_senc",
+            "source-layer": "PONTON",
+            "filter": [ "any", [ "==", "$type", "Polygon" ], [ "==", "$type", "LineString" ] ],
+            "paint": {
+                "line-color": colors["CSTLN"],
+                "line-width": 1
+            }
+        }),
+        json!({
+            "id": "HULKES_fill",
+            "type": "fill",
+            "source": "src_senc",
+            "source-layer": "HULKES",
+            "filter": [ "any", [ "==", "$type", "Polygon" ] ],
+            "paint": {
+                "fill-color": "#B7911F"
+            }
+        }),
+        json!({
+            "id": "HULKES_line",
+            "type": "line",
+            "source": "src_senc",
+            "source-layer": "HULKES",
+            "filter": [
+            "any",
+            [
+                "==",
+                "$type",
+                "Polygon"
+            ],
+            [
+                "==",
+                "$type",
+                "LineString"
+            ]
+            ],
+            "paint": {
+                "line-color": colors["CSTLN"],
+                "line-width": 1.5
+            }
+        }),
+        json!({
+            "id": "LNDARE_fill",
+            "type": "fill",
+            "source": "src_senc",
+            "source-layer": "LNDARE",
+            "filter": [
+            "any",
+            [
+                "==",
+                "$type",
+                "Polygon"
+            ]
+            ],
+            "paint": {
+                "fill-color": colors["LANDA"]
+            }
+        }),
+        json!({
+            "id": "LNDARE_line",
+            "type": "line",
+            "source": "src_senc",
+            "source-layer": "LNDARE",
+            "filter": [
+            "any",
+            [
+                "==",
+                "$type",
+                "Polygon"
+            ],
+            [
+                "==",
+                "$type",
+                "LineString"
+            ]
+            ],
+            "paint": {
+                "line-color": colors["CSTLN"],
+                "line-width": 2
+            }
+        }),
+        json!({
+            "id": "BOYSPP_point",
+            "type": "symbol",
+            "source": "src_senc",
+            "source-layer": "BOYSPP",
+            "filter": [ "any", [ "==", "$type", "Point" ] ],
+            "layout": {
+                "text-font": [ "Roboto Bold" ],
+                "text-anchor": "center",
+                "text-justify": "center",
+                "text-field": [ "get", "OBJNAM" ],
+                "text-allow-overlap": true,
+                "text-ignore-placement": true,
+                "text-max-width": 9,
+                "text-size": 10,
+                "text-padding": 6,
+                "symbol-placement": "point"
+            },
+            "paint": {
+                "text-color": *colors::TXT_FG,
+                "text-halo-color": *colors::TXT_BG,
+                "text-halo-width": 1.5
+            }
+        })
+    ]
 }

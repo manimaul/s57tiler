@@ -8,6 +8,9 @@ mod styler;
 mod utils;
 mod colors;
 mod soundg;
+mod seaare;
+mod depare;
+mod depcnt;
 
 use std::path::Path;
 
