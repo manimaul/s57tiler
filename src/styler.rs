@@ -1,5 +1,5 @@
 use std::path::Path;
-use crate::{utils, soundg, seaare, depare, depcnt, boyspp};
+use crate::{utils, soundg, seaare, depare, depcnt, boyspp, lights};
 use crate::colors;
 use serde_json::json;
 use serde_json::Value;
@@ -96,8 +96,9 @@ fn style_layers(depth: &String, color: &String) -> Value {
         items.append(&mut depare::layers(&colors));
         items.append(&mut depcnt::layers(&colors));
         items.append(&mut todo_layers(&colors));
-        items.append(&mut soundg::layers(&depth));
+        items.append(&mut soundg::layers(&colors, &depth));
         items.append(&mut boyspp::layers());
+        items.append(&mut lights::layers());
     };
     return value;
 }

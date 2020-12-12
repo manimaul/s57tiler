@@ -32,11 +32,6 @@ pub fn layers() -> Vec<Value> {
                 "icon-image": "BOYPIL01",
                 "icon-keep-upright": true,
                 "symbol-placement": "point"
-            },
-            "paint": {
-                "text-color": *colors::TXT_FG,
-                "text-halo-color": *colors::TXT_BG,
-                "text-halo-width": 1.5
             }
         }),
         // json!({

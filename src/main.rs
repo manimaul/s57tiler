@@ -12,6 +12,7 @@ mod seaare;
 mod depare;
 mod depcnt;
 mod boyspp;
+mod lights;
 
 use std::path::Path;
 

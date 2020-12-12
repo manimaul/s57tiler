@@ -18,7 +18,7 @@ use crate::colors;
 ///     Drying heights (drying soundings) are indicated by a negative value.
 /// Distinction:
 ///     depth area; wreck; underwater/awash rock; obstruction;
-pub fn layers(depth: &String) -> Vec<Value> {
+pub fn layers(colors: &Value, depth: &String) -> Vec<Value> {
     match depth.as_str() {
         "fathoms" => vec![
             json!({
@@ -40,8 +40,8 @@ pub fn layers(depth: &String) -> Vec<Value> {
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": *colors::TXT_FG,
-                "text-halo-color": *colors::TXT_BG,
+                "text-color": colors["SNDG2"],
+                "text-halo-color": colors["CHWHT"],
                 "text-halo-width": 1.5
               }
             }),
@@ -71,7 +71,7 @@ pub fn layers(depth: &String) -> Vec<Value> {
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": *colors::TXT_BG
+                "text-color": colors["CHWHT"]
               }
             })
         ],
@@ -95,8 +95,8 @@ pub fn layers(depth: &String) -> Vec<Value> {
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": *colors::TXT_FG,
-                "text-halo-color": *colors::TXT_BG,
+                "text-color": colors["SNDG2"],
+                "text-halo-color": colors["CHWHT"],
                 "text-halo-width": 1.5
               }
             })
@@ -121,8 +121,8 @@ pub fn layers(depth: &String) -> Vec<Value> {
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": *colors::TXT_FG,
-                "text-halo-color": *colors::TXT_BG,
+                "text-color": colors["SNDG2"],
+                "text-halo-color": colors["CHWHT"],
                 "text-halo-width": 1.5
               }
             })
