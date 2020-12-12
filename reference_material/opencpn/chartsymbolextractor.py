@@ -6,6 +6,7 @@
 from xml.dom.minidom import parseString
 import os
 import json
+from PIL import Image
 
 f = open("chartsymbols.xml", "r")
 lines = f.read()
@@ -56,7 +57,7 @@ https://github.com/OpenCPN/OpenCPN/blob/6acf43c93a71463be907f228f7175bf906ad019e
 """
 
 
-def read_sprites():
+def read_sprites(render_img: bool = False):
     dom = parseString(lines)
     result = dict()
     for symbol in dom.getElementsByTagName("symbol"):
@@ -68,6 +69,11 @@ def read_sprites():
             height = int(btmEle[0].attributes["height"].value)
             x = locEle[0].attributes["x"].value
             y = locEle[0].attributes["y"].value
+            if render_img:
+                im = Image.open(os.path.join(script_dir, "rastersymbols-day.png"))
+                # (left, upper, right, lower) = (20, 20, 100, 100)
+                im = im.crop((int(x), int(y), int(x) + int(width), int(y) + int(height)))
+                im.save(os.path.join(script_dir, "out/{}.png".format(name)))
             result[name] = {
                 "width": int(width),
                 "height": int(height),
@@ -97,4 +103,4 @@ def read_colors():
 
 
 if __name__ == '__main__':
-    read_sprites()
+    read_sprites(True)
