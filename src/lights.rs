@@ -28,6 +28,8 @@ pub fn layers() -> Vec<Value> {
             "layout": {
                 "icon-image": "LIGHTDEF",
                 "icon-keep-upright": false,
+                "icon-anchor": "top-left",
+                "icon-allow-overlap": true,
                 "symbol-placement": "point"
             }
         })
