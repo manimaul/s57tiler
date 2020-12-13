@@ -1,5 +1,4 @@
 use serde_json::{Value, json};
-use crate::colors;
 
 /// Sounding SOUNDG
 /// Geometric primitives: Point
@@ -22,7 +21,7 @@ pub fn layers(colors: &Value, depth: &String) -> Vec<Value> {
     match depth.as_str() {
         "fathoms" => vec![
             json!({
-              "id": "fathoms",
+              "id": "soundg_fathoms",
               "type": "symbol",
               "source": "src_senc",
               "source-layer": "SOUNDG",
@@ -34,19 +33,17 @@ pub fn layers(colors: &Value, depth: &String) -> Vec<Value> {
                 "text-field": ["get", "FATHOMS"],
                 "text-allow-overlap": true,
                 "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
+                "text-size": 11,
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": colors["SNDG2"],
+                "text-color": ["case", ["<=", ["get", "METERS"], 9.0], colors["SNDG2"], colors["SNDG1"] ],
                 "text-halo-color": colors["CHWHT"],
                 "text-halo-width": 1.5
               }
             }),
             json!({
-              "id": "fathoms_feet",
+              "id": "soundg_fathoms_feet",
               "type": "symbol",
               "source": "src_senc",
               "source-layer": "SOUNDG",
@@ -65,19 +62,17 @@ pub fn layers(colors: &Value, depth: &String) -> Vec<Value> {
                 "text-field": ["get", "FATHOMS_FT"],
                 "text-allow-overlap": true,
                 "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
+                "text-size": 9,
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": colors["CHWHT"]
+                "text-color": ["case", ["<=", ["get", "METERS"], 9.0], colors["SNDG2"], colors["SNDG1"] ]
               }
             })
         ],
         "feet" => vec![
             json!({
-              "id": "feet",
+              "id": "soundg_feet",
               "type": "symbol",
               "source": "src_senc",
               "source-layer": "SOUNDG",
@@ -89,13 +84,11 @@ pub fn layers(colors: &Value, depth: &String) -> Vec<Value> {
                 "text-field": ["get", "FEET"],
                 "text-allow-overlap": true,
                 "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
+                "text-size": 11,
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": colors["SNDG2"],
+                "text-color": ["case", ["<=", ["get", "METERS"], 9.0], colors["SNDG2"], colors["SNDG1"] ],
                 "text-halo-color": colors["CHWHT"],
                 "text-halo-width": 1.5
               }
@@ -103,7 +96,7 @@ pub fn layers(colors: &Value, depth: &String) -> Vec<Value> {
         ],
         "meters" | _ => vec![
             json!({
-              "id": "feet",
+              "id": "soundg_meters",
               "type": "symbol",
               "source": "src_senc",
               "source-layer": "SOUNDG",
@@ -115,13 +108,11 @@ pub fn layers(colors: &Value, depth: &String) -> Vec<Value> {
                 "text-field": ["get", "METERS"],
                 "text-allow-overlap": true,
                 "text-ignore-placement": true,
-                "text-max-width": 9,
-                "text-size": 10,
-                "text-padding": 6,
+                "text-size": 11,
                 "symbol-placement": "point"
               },
               "paint": {
-                "text-color": colors["SNDG2"],
+                "text-color": ["case", ["<=", ["get", "METERS"], 9.0], colors["SNDG2"], colors["SNDG1"] ],
                 "text-halo-color": colors["CHWHT"],
                 "text-halo-width": 1.5
               }
