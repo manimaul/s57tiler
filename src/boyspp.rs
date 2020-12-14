@@ -97,11 +97,56 @@ pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Ge
         let symbol = match shape {
             Boyshp::Conical => {
                 //todo: (WK) WIP
-                "BOYCON01"
+                if compare(&vec![Colour::White, Colour::Orange], &colors) {
+                    "BOYCON77"
+                } else {
+                    "BOYCON01"
+                }
             }
             Boyshp::Can => {
-                //todo: (WK) WIP
-                "BOYCAN01"
+                if compare(&vec![Colour::Red], &colors) {
+                    "BOYCAN60"
+                } else if compare(&vec![Colour::Green], &colors) {
+                    "BOYCAN61"
+                } else if compare(&vec![Colour::White], &colors) {
+                    "BOYCAN62"
+                } else if compare(&vec![Colour::Yellow], &colors) {
+                    "BOYCAN63"
+                } else if compare(&vec![Colour::Black], &colors) {
+                    "BOYCAN64"
+                } else if compare(&vec![Colour::Black, Colour::Yellow], &colors) {
+                    "BOYCAN68"
+                } else if compare(&vec![Colour::Yellow, Colour::Black], &colors) {
+                    "BOYCAN69"
+                } else if compare(&vec![Colour::Black, Colour::Yellow, Colour::Black], &colors) {
+                    "BOYCAN70"
+                } else if compare(&vec![Colour::Yellow, Colour::Black, Colour::Yellow], &colors) {
+                    "BOYCAN71"
+                } else if compare(&vec![Colour::Red, Colour::Green, Colour::Red], &colors) {
+                    "BOYCAN73"
+                } else if compare(&vec![Colour::White, Colour::Red], &colors) {
+                    "BOYCAN74" // stripes are vertical but we don't have a white,red horizontal icon
+                } else if compare(&vec![Colour::Red, Colour::Green], &colors) {
+                    "BOYCAN75"
+                } else if compare(&vec![Colour::Black, Colour::Red, Colour::Black], &colors) {
+                    "BOYCAN76"
+                } else if compare(&vec![Colour::White, Colour::Orange], &colors) {
+                    "BOYCAN77"
+                } else if compare(&vec![Colour::White, Colour::Orange, Colour::White], &colors) {
+                    "BOYCAN78"
+                } else if compare(&vec![Colour::Orange], &colors) {
+                    "BOYCAN79"
+                } else if compare(&vec![Colour::Red, Colour::White], &colors) {
+                    "BOYCAN80"
+                } else if compare(&vec![Colour::Orange, Colour::White], &colors) {
+                    "BOYCAN81"
+                } else if compare(&vec![Colour::Red, Colour::White, Colour::Red, Colour::White, Colour::Red], &colors) {
+                    "BOYCAN82"
+                } else if compare(&vec![Colour::Red, Colour::White, Colour::Red, Colour::White], &colors) {
+                    "BOYCAN83"
+                } else {
+                    "BOYCAN65"
+                }
             }
             Boyshp::Spherical => {
                 //todo: (WK) WIP
