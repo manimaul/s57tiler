@@ -83,11 +83,11 @@ pub fn layers() -> Vec<Value> {
     ]
 }
 
-fn compare<T : Eq>(lhs: &[T], rhs: &[T]) -> bool {
+fn compare<T: Eq>(lhs: &[T], rhs: &[T]) -> bool {
     (lhs.len() == rhs.len()) &&
         lhs.iter()
             .zip(rhs)
-            .all(|(a,b)| a == b)
+            .all(|(a, b)| a == b)
 }
 
 pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Geometry {
@@ -96,9 +96,48 @@ pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Ge
         let colors = Colour::from_value(properties);
         let symbol = match shape {
             Boyshp::Conical => {
-                //todo: (WK) WIP
-                if compare(&vec![Colour::White, Colour::Orange], &colors) {
+                if compare(&vec![Colour::White], &colors) {
+                    "BOYCON01"
+                } else if compare(&vec![Colour::Red], &colors) {
+                    "BOYCON60"
+                } else if compare(&vec![Colour::Green], &colors) {
+                    "BOYCON61"
+                } else if compare(&vec![Colour::Yellow], &colors) {
+                    "BOYCON62"
+                } else if compare(&vec![Colour::Black, Colour::Red, Colour::Black], &colors) {
+                    "BOYCON63"
+                } else if compare(&vec![Colour::Black], &colors) {
+                    "BOYCON64"
+                } else if compare(&vec![Colour::Green, Colour::White, Colour::Green, Colour::White, Colour::Green], &colors) {
+                    "BOYCON65"
+                } else if compare(&vec![Colour::Red, Colour::Green, Colour::Red], &colors) {
+                    "BOYCON66"
+                } else if compare(&vec![Colour::Green, Colour::Red, Colour::Green], &colors) {
+                    "BOYCON67"
+                } else if compare(&vec![Colour::Green, Colour::Red], &colors) {
+                    "BOYCON68"
+                } else if compare(&vec![Colour::Black, Colour::Yellow], &colors) {
+                    "BOYCON69"
+                } else if compare(&vec![Colour::Yellow, Colour::Black], &colors) {
+                    "BOYCON70"
+                } else if compare(&vec![Colour::Black, Colour::Yellow, Colour::Black], &colors) {
+                    "BOYCON71"
+                } else if compare(&vec![Colour::Yellow, Colour::Black, Colour::Yellow], &colors) {
+                    "BOYCON72"
+                } else if compare(&vec![Colour::Green, Colour::White], &colors) {
+                    "BOYCON73"
+                } else if compare(&vec![Colour::White, Colour::Orange], &colors) {
                     "BOYCON77"
+                } else if compare(&vec![Colour::Red, Colour::White], &colors) &&
+                    compare(&vec![Colpat::VerticalStripes], &pattern) {
+                    "BOYCON78"
+                } else if compare(&vec![Colour::Red, Colour::Green], &colors) {
+                    "BOYCON79"
+                } else if compare(&vec![Colour::White, Colour::Orange, Colour::White], &colors) {
+                    "BOYCON80"
+                } else if compare(&vec![Colour::Blue, Colour::Red, Colour::White, Colour::Blue], &colors) &&
+                    compare(&vec![Colpat::HorizontalStripes, Colpat::VerticalStripes], &pattern) {
+                    "BOYCON81"
                 } else {
                     "BOYCON01"
                 }
@@ -124,8 +163,9 @@ pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Ge
                     "BOYCAN71"
                 } else if compare(&vec![Colour::Red, Colour::Green, Colour::Red], &colors) {
                     "BOYCAN73"
-                } else if compare(&vec![Colour::White, Colour::Red], &colors) {
-                    "BOYCAN74" // stripes are vertical but we don't have a white,red horizontal icon
+                } else if compare(&vec![Colour::White, Colour::Red], &colors) &&
+                    compare(&vec![Colpat::VerticalStripes], &pattern) {
+                    "BOYCAN74"
                 } else if compare(&vec![Colour::Red, Colour::Green], &colors) {
                     "BOYCAN75"
                 } else if compare(&vec![Colour::Black, Colour::Red, Colour::Black], &colors) {
