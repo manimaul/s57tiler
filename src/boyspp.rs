@@ -302,10 +302,18 @@ pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Ge
                 }
             }
             Boyshp::Barrel => {
-                //todo: (WK) WIP
-                "BOYBAR01"
+                if compare(&vec![Colour::Red], &colors) {
+                    "BOYBAR60"
+                } else if compare(&vec![Colour::Green], &colors) {
+                    "BOYBAR61"
+                } else if compare(&vec![Colour::Yellow], &colors) {
+                    "BOYBAR62"
+                } else {
+                    "BOYBAR01"
+                }
             }
             Boyshp::SuperBuoy => {
+                //todo: (WK) WIP
                 if compare(&vec![Catspm::LargeAutomaticNavigationalBuoy], &Catspm::from_value(properties)) {
                     "BOYSUP03"
                 } else {
