@@ -189,8 +189,41 @@ pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Ge
                 }
             }
             Boyshp::Spherical => {
-                //todo: (WK) WIP
-                "BOYSPH01"
+                if compare(&vec![Colour::White], &colors) {
+                    "BOYSPH05"
+                } else if compare(&vec![Colour::Red], &colors) {
+                    "BOYSPH60"
+                } else if compare(&vec![Colour::Green], &colors) {
+                    "BOYSPH61"
+                } else if compare(&vec![Colour::Yellow], &colors) {
+                    "BOYSPH62"
+                } else if compare(&vec![Colour::White, Colour::Red, Colour::White, Colour::Red, Colour::White], &colors) &&
+                    compare(&vec![Colpat::VerticalStripes], &pattern) {
+                    "BOYSPH65"
+                } else if compare(&vec![Colour::Red, Colour::Green, Colour::Red], &colors) {
+                    "BOYSPH66"
+                } else if compare(&vec![Colour::Green, Colour::Red, Colour::Green], &colors) {
+                    "BOYSPH67"
+                } else if compare(&vec![Colour::Black, Colour::Yellow], &colors) {
+                    "BOYSPH68"
+                } else if compare(&vec![Colour::Yellow, Colour::Black], &colors) {
+                    "BOYSPH69"
+                } else if compare(&vec![Colour::Black, Colour::Yellow, Colour::Black], &colors) {
+                    "BOYSPH70"
+                } else if compare(&vec![Colour::Yellow, Colour::Black, Colour::Yellow], &colors) {
+                    "BOYSPH71"
+                } else if compare(&vec![Colour::Red, Colour::Green], &colors) {
+                    "BOYSPH74"
+                } else if compare(&vec![Colour::Green, Colour::Red], &colors) {
+                    "BOYSPH75"
+                } else if compare(&vec![Colour::White, Colour::Orange], &colors) {
+                    "BOYSPH76"
+                } else if compare(&vec![Colour::Red, Colour::White], &colors) &&
+                    compare(&vec![Colpat::VerticalStripes], &pattern) {
+                    "BOYSPH78"
+                } else {
+                    "BOYSPH01"
+                }
             }
             Boyshp::Pillar => {
                 if compare(&vec![Colour::Red], &colors) {
