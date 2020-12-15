@@ -275,8 +275,31 @@ pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Ge
                 }
             }
             Boyshp::Spar => {
-                //todo: (WK) WIP
-                "BOYSPR01"
+                if compare(&vec![Colour::Orange, Colour::White, Colour::Orange, Colour::White], &colors) {
+                    "BOYSPR04"
+                } else if compare(&vec![Colour::White], &colors) {
+                    "BOYSPR05"
+                } else if compare(&vec![Colour::Red], &colors) {
+                    "BOYSPR60"
+                } else if compare(&vec![Colour::Green], &colors) {
+                    "BOYSPR61"
+                } else if compare(&vec![Colour::Yellow], &colors) {
+                    "BOYSPR62"
+                } else if compare(&vec![Colour::Red, Colour::White, Colour::Red], &colors) {
+                    "BOYSPR65"
+                } else if compare(&vec![Colour::Black, Colour::Yellow], &colors) {
+                    "BOYSPR68"
+                } else if compare(&vec![Colour::Yellow, Colour::Black], &colors) {
+                    "BOYSPR69"
+                } else if compare(&vec![Colour::Black, Colour::Yellow, Colour::Black], &colors) {
+                    "BOYSPR70"
+                } else if compare(&vec![Colour::Yellow, Colour::Black, Colour::Yellow], &colors) {
+                    "BOYSPR71"
+                } else if compare(&vec![Colour::Black, Colour::Red, Colour::Black], &colors) {
+                    "BOYSPR72"
+                } else {
+                    "BOYSPR01"
+                }
             }
             Boyshp::Barrel => {
                 //todo: (WK) WIP
