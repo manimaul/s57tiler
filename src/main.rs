@@ -14,6 +14,7 @@ mod depcnt;
 mod boyspp;
 mod lights;
 mod catspm;
+mod util;
 
 use std::path::Path;
 

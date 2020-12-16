@@ -4,6 +4,7 @@ use crate::geojson_builder::JsonObject;
 use geojson::Geometry;
 use crate::colors::{Colpat, Colour};
 use crate::catspm::Catspm;
+use crate::util::compare;
 
 /// BOYSHP
 ///ID	Meaning	INT 1	S-4
@@ -81,13 +82,6 @@ pub fn layers() -> Vec<Value> {
             }
         })
     ]
-}
-
-fn compare<T: Eq>(lhs: &[T], rhs: &[T]) -> bool {
-    (lhs.len() == rhs.len()) &&
-        lhs.iter()
-            .zip(rhs)
-            .all(|(a, b)| a == b)
 }
 
 pub fn process_boyspp(geojson_geom: Geometry, properties: &mut JsonObject) -> Geometry {

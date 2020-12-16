@@ -3,7 +3,7 @@ use gdal::vector::FieldValue;
 use serde_json::{Value, Map, Number};
 use serde_json;
 use gdal::spatial_ref::SpatialRef;
-use crate::{soundg, boyspp};
+use crate::{soundg, boyspp, lights};
 
 pub type JsonObject = Map<String, Value>;
 
@@ -27,6 +27,7 @@ fn gdal_feature_to_geojson_feature(
                         match layer_name.as_str() {
                             "SOUNDG" => soundg::process_sounding(geojson_geom, &mut properties),
                             "BOYSPP" => boyspp::process_boyspp(geojson_geom, &mut properties),
+                            "LIGHTS" => lights::process_lights(geojson_geom, &mut properties),
                             _ => geojson_geom
                         }
                     })
