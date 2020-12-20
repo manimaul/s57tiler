@@ -57,11 +57,31 @@ https://github.com/OpenCPN/OpenCPN/blob/6acf43c93a71463be907f228f7175bf906ad019e
 """
 
 
-def read_sprites(render_img: bool = False):
+def read_symbols():
+    dom = parseString(lines)
+    result = dict()
+    for lookup in dom.getElementsByTagName("lookup"):
+        table_name = lookup.getElementsByTagName("table-name")[0].firstChild.nodeValue
+        if table_name not in result:
+            result[table_name] = set()
+        inst = lookup.getElementsByTagName("instruction")
+        if inst is not None and inst.item(0) is not None and inst.item(0).firstChild is not None:
+            for ea in inst.item(0).firstChild.nodeValue.split(";"):
+                if ea.startswith("SY"):
+                    for ea in ea[3:-1].split(","):
+                        result[table_name].add(ea)
+    for key in result:
+        result[key] = list(result[key])
+    return result
+
+
+def read_sprites(render_img: bool = False, only_names: set = None):
     dom = parseString(lines)
     result = dict()
     for symbol in dom.getElementsByTagName("symbol"):
         name = symbol.getElementsByTagName("name")[0].firstChild.nodeValue
+        if only_names is not None and name not in only_names:
+            continue
         btmEle = symbol.getElementsByTagName("bitmap")
         if len(btmEle) > 0:
             locEle = btmEle[0].getElementsByTagName("graphics-location")
@@ -103,4 +123,7 @@ def read_colors():
 
 
 if __name__ == '__main__':
-    read_sprites(True)
+    read_sprites(render_img=True)
+    # paper_symbols = set(read_symbols()["Paper"])
+    # read_sprites(render_img=True, only_names=paper_symbols)
+    # print(json.dumps(read_symbols(), indent=2))
