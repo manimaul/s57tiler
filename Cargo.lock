@@ -59,7 +59,7 @@ dependencies = [
 [[package]]
 name = "gdal"
 version = "0.6.0"
-source = "git+https://github.com/manimaul/gdal-rust.git?branch=wkamp_iter#f4932f909e48d6ba42d4b9e2d4bdfd8a8d6e8133"
+source = "git+https://github.com/georust/gdal.git#020f578274bd424f2017aeda534b7dcde1a74984"
 dependencies = [
  "gdal-sys",
  "geo-types",
@@ -72,7 +72,7 @@ dependencies = [
 [[package]]
 name = "gdal-sys"
 version = "0.2.4"
-source = "git+https://github.com/manimaul/gdal-rust.git?branch=wkamp_iter#f4932f909e48d6ba42d4b9e2d4bdfd8a8d6e8133"
+source = "git+https://github.com/georust/gdal.git#020f578274bd424f2017aeda534b7dcde1a74984"
 dependencies = [
  "libc",
  "pkg-config",
