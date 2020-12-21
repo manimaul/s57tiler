@@ -14,8 +14,8 @@ geojson = "0.20.1"
 #gdal-sys = { git = "https://github.com/manimaul/gdal-rust.git", branch = "wkamp_iter" }
 #gdal = { path = "/Users/williamkamp/source/madrona/gdal-rust" }
 #gdal-sys = { path = "/Users/williamkamp/source/madrona/gdal-rust" }
-gdal = { git = "https://github.com/georust/gdal.git", commit = "020f578274bd424f2017aeda534b7dcde1a74984" }
-gdal-sys = { git = "https://github.com/georust/gdal.git", commit = "020f578274bd424f2017aeda534b7dcde1a74984" }
+gdal = "0.7.0"
+gdal-sys = "0.3.0"
 
 clap = "2.33.3"
 lazy_static = "1.4.0"

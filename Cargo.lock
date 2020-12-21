@@ -58,8 +58,9 @@ dependencies = [
 
 [[package]]
 name = "gdal"
-version = "0.6.0"
-source = "git+https://github.com/georust/gdal.git#020f578274bd424f2017aeda534b7dcde1a74984"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "182ac6140759342270c7c4b442ae5d8f8ec29fbf1b401a7614ba4cf70f5715e4"
 dependencies = [
  "gdal-sys",
  "geo-types",
@@ -71,8 +72,9 @@ dependencies = [
 
 [[package]]
 name = "gdal-sys"
-version = "0.2.4"
-source = "git+https://github.com/georust/gdal.git#020f578274bd424f2017aeda534b7dcde1a74984"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d600c3062a25e4c201e4627ccf99d5a9c01595d739e73d5f5078bb97737cba6c"
 dependencies = [
  "libc",
  "pkg-config",
