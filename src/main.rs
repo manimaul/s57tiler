@@ -15,6 +15,7 @@ mod boyspp;
 mod lights;
 mod catspm;
 mod util;
+mod zfinder;
 
 use std::path::Path;
 

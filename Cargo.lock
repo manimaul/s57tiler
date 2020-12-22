@@ -59,10 +59,9 @@ dependencies = [
 [[package]]
 name = "gdal"
 version = "0.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "182ac6140759342270c7c4b442ae5d8f8ec29fbf1b401a7614ba4cf70f5715e4"
+source = "git+https://github.com/manimaul/gdal-rust.git?branch=wk_centroid#e96196f176d68aeac99f3fb3b0d4e668aca5a8a8"
 dependencies = [
- "gdal-sys",
+ "gdal-sys 0.3.0 (git+https://github.com/manimaul/gdal-rust.git?branch=wk_centroid)",
  "geo-types",
  "libc",
  "num-traits",
@@ -75,6 +74,16 @@ name = "gdal-sys"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d600c3062a25e4c201e4627ccf99d5a9c01595d739e73d5f5078bb97737cba6c"
+dependencies = [
+ "libc",
+ "pkg-config",
+ "semver",
+]
+
+[[package]]
+name = "gdal-sys"
+version = "0.3.0"
+source = "git+https://github.com/manimaul/gdal-rust.git?branch=wk_centroid#e96196f176d68aeac99f3fb3b0d4e668aca5a8a8"
 dependencies = [
  "libc",
  "pkg-config",
@@ -184,7 +193,7 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "gdal",
- "gdal-sys",
+ "gdal-sys 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "geojson",
  "lazy_static",
  "serde",
