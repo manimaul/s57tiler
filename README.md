@@ -21,7 +21,7 @@ docker build -t s57t .
 docker run -v $(pwd)/data:/data s57t s57tiler mbtiles -i /data/charts/US5WA22M/US5WA22M.000 -o /data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
 
 # Serve up the rendered marine chart / map
-docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
+docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl:v3.1.1
 
 # Optionally fire up maputnik to work on styling
 docker run -it --rm -p 8888:8888 maputnik/editor
