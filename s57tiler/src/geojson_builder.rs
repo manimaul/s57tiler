@@ -129,11 +129,12 @@ pub fn feature_collection_from_layer(layer: &gdal::vector::Layer, target_sr: &Sp
 mod test {
     use super::*;
     use std::path::Path;
+    use std::env;
 
     #[test]
     fn test_gdal_feature_to_geojson_feature() {
-        let chart = Path::new(file!())
-            .parent().unwrap()
+        let out_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+        let chart = Path::new(&out_dir)
             .parent().unwrap()
             .join("data")
             .join("charts")
