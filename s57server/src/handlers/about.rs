@@ -1,6 +1,7 @@
-use actix_web::{get, error, Error, HttpRequest, HttpResponse, Responder};
+use actix_web::{error, Error, HttpRequest, HttpResponse, Responder};
 use futures::future::{ready, Ready};
-use serde::{Serialize};
+use serde::Serialize;
+
 use crate::constants;
 
 #[derive(Serialize)]
@@ -31,9 +32,4 @@ impl Responder for About {
             }).map_err(|_| error::ErrorInternalServerError("something is awry"))
         )
     }
-}
-
-#[get("/v1/about")]
-pub async fn about() -> impl Responder {
-    About::new()
 }

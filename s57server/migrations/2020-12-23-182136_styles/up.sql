@@ -2,6 +2,6 @@
 CREATE TABLE styles
 (
     id     BIGSERIAL PRIMARY KEY,
-    name   TEXT NOT NULL,
+    name   TEXT UNIQUE NOT NULL,
     style  JSONB NOT NULL
 );

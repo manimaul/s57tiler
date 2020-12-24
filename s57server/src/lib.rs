@@ -1,6 +1,5 @@
 mod constants;
 pub mod handlers;
-mod models;
 #[macro_use]
 extern crate diesel;
 #[macro_use]

@@ -14,6 +14,7 @@ async fn main() -> std::io::Result<()> {
     info!("starting s57server");
     HttpServer::new(|| {
         App::new()
-            .service(s57server::handlers::about)
+            .service(s57server::handlers::info)
+            .service(s57server::handlers::post_style)
     }).bind("127.0.0.1:8080")?.run().await
 }
