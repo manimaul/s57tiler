@@ -1,12 +1,12 @@
-use actix_web::{error, Error, get, HttpResponse, post, Responder, web};
-use diesel::{ExpressionMethods, RunQueryDsl};
+use actix_web::{error, get, HttpResponse, post, Responder, web};
+use diesel::{ExpressionMethods, RunQueryDsl, QueryDsl};
 use futures::StreamExt;
 use serde_json::Value;
 
 use crate::db;
 use crate::errors::ErrMapper;
 use crate::handlers::about::About;
-use crate::handlers::style::PathParam;
+use crate::handlers::style::{PathParam, Style};
 use crate::schema;
 
 mod about;
@@ -19,6 +19,17 @@ pub async fn info() -> impl Responder {
 
 const MAX_SIZE: usize = 262_144; // max payload size is 256k
 
+#[get("/v1/style/{name}")]
+pub async fn get_style(path_param: web::Path<PathParam>) -> impl Responder {
+    db::db_conn().and_then(|conn|{
+        schema::styles::table.filter(schema::styles::name.eq(&path_param.name))
+            .first::<Style>(&*conn)
+            .map_not_found(&format!("style {} not found", &path_param.name))
+    }).map(|style_record: Style| {
+        HttpResponse::Ok().json(style_record.style)
+    })
+}
+
 ///curl -v --header "Content-Type: application/json" \
 //   --request POST \
 //   --data '{"foo":"bar"}' \
@@ -27,7 +38,7 @@ const MAX_SIZE: usize = 262_144; // max payload size is 256k
 pub async fn post_style(
     mut payload: web::Payload,
     path_param: web::Path<PathParam>
-) -> Result<HttpResponse, Error> {
+) -> impl Responder {
     let mut body = web::BytesMut::new();
     while let Some(chunk) = payload.next().await {
         let chunk = chunk?;

@@ -16,5 +16,6 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(s57server::handlers::info)
             .service(s57server::handlers::post_style)
+            .service(s57server::handlers::get_style)
     }).bind("127.0.0.1:8080")?.run().await
 }
