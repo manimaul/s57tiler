@@ -1,11 +1,13 @@
-use crate::schema::styles;
-use serde_json::Value;
-use actix_web::{web, error};
-use crate::constants::MAX_POST_SIZE;
-use futures::StreamExt;
-use crate::{db, schema};
+use actix_web::{error, web};
 use diesel::{ExpressionMethods, RunQueryDsl};
+use diesel::prelude::*;
+use futures::StreamExt;
+use serde_json::Value;
+
+use crate::{db, schema};
+use crate::constants::MAX_POST_SIZE;
 use crate::errors::{ErrMapper, Result};
+use crate::schema::styles;
 
 #[derive(Queryable, QueryableByName)]
 #[table_name = "styles"]
@@ -21,6 +23,15 @@ pub struct PathParam {
 }
 
 impl Style {
+
+    pub fn query(name: &str) -> Result<Style> {
+        db::db_conn().and_then(|conn|{
+            styles::table.filter(styles::name.eq(name))
+                .first::<Style>(&*conn)
+                .map_not_found("style not found")
+        })
+    }
+
     pub async fn upsert(name: &String, mut payload: web::Payload) -> Result<Value> {
         let mut body = web::BytesMut::new();
         while let Some(chunk) = payload.next().await {
