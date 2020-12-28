@@ -18,11 +18,10 @@ diesel = { version = "1.4.4", features = ["postgres", "extras"] }
 dotenv = "0.15.0"
 r2d2 = "0.8.9"
 r2d2-diesel = "1.0.0"
-#r2d2_postgres = "0.17.0"
-#postgis = "0.7.0"
-#postgres = "0.18.1"
-
+r2d2_postgres = "0.18.0"
+geojson = "0.20.1"
 lazy_static = "1.4.0"
+postgres = { version = "0.19.0", features = ["with-serde_json-1"] }
 
 # https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout
 [lib]

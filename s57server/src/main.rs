@@ -20,5 +20,7 @@ async fn main() -> std::io::Result<()> {
             .service(s57server::handlers::post_chart)
             .service(s57server::handlers::get_chart)
             .service(s57server::handlers::delete_chart)
+            .service(s57server::handlers::post_geojson)
+            .service(s57server::handlers::get_geojson)
     }).bind("127.0.0.1:8080")?.run().await
 }
