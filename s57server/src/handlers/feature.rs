@@ -7,8 +7,34 @@ use serde_json::{Map, Value};
 use crate::{db, errors};
 use crate::errors::ErrMapper;
 use crate::handlers::GeoParams;
+use actix_web::error;
 
 pub type JsonObject = Map<String, Value>;
+
+pub fn query_tile(z: i32, x: i32, y: i32) -> errors::Result<Vec<u8>> {
+    db::db_conn2().and_then(|mut conn| {
+        conn.query_one("
+            WITH mvtgeom AS
+                     (
+                         SELECT ST_AsMVTGeom(geom, ST_TileEnvelope($1,$2,$3), 4096) AS geom,
+                                layer                                               AS name,
+                                props                                               AS properties
+                         FROM features
+                         WHERE ST_Intersects(geom, ST_TileEnvelope($1,$2,$3, ST_MakeEnvelope(-180,-90,180,90,4326)))
+                     )
+            SELECT ST_AsMVT(mvtgeom.*, mvtgeom.name)
+            FROM mvtgeom;
+        ", &[&z, &x, &y]).map_internal_server_error("geojson query failed")
+            .and_then(|row| {
+                if row.len() == 1 {
+                    let data: Vec<u8> = row.get(0);
+                    Ok(data)
+                } else {
+                    Err(error::ErrorNotFound("no such resource"))
+                }
+            })
+    })
+}
 
 pub fn query(params: &GeoParams) -> errors::Result<geojson::FeatureCollection> {
     db::db_conn2().and_then(|mut conn| {
@@ -37,7 +63,7 @@ pub fn query(params: &GeoParams) -> errors::Result<geojson::FeatureCollection> {
         geojson::FeatureCollection {
             bbox: None,
             features,
-            foreign_members: None
+            foreign_members: None,
         }
     })
 }

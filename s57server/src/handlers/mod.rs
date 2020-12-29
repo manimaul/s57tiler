@@ -1,9 +1,11 @@
 use actix_web::{delete, get, HttpResponse, post, Responder, web};
+use actix_web::http::header::ContentType;
 
 use crate::handlers::about::About;
 use crate::handlers::chart::{Chart, ChartInsert};
 use crate::handlers::feature::FeatureInsert;
 use crate::handlers::style::{PathParam, Style};
+use mime::Mime;
 
 mod about;
 mod style;
@@ -69,7 +71,7 @@ pub struct GeoParams {
     name: String
 }
 
-///curl -v -H "Content-Type: application/json" --request POST  --data-binary "@data/BOYSPP.json" 'http://localhost:8080/v1/geojson?chart_id=8&name=BOYSPP'
+///curl -v -H "Content-Type: application/json" --request POST --data-binary "@data/BOYSPP.json" 'http://localhost:8080/v1/geojson?chart_id=8&name=BOYSPP'
 #[post("/v1/geojson")]
 pub async fn post_geojson(
     params: web::Query<GeoParams>,
@@ -87,4 +89,24 @@ pub async fn get_geojson(
     params: web::Query<GeoParams>
 ) -> impl Responder {
     feature::query(&params.0).map(|results| HttpResponse::Ok().json(results))
+}
+
+#[derive(Deserialize)]
+pub struct Tile {
+    pub z: i32,
+    pub x: i32,
+    pub y: i32
+}
+
+#[get("/v1/tile/{z}/{x}/{y}")]
+pub async fn get_tile(
+    tile: web::Path<Tile>
+) -> impl Responder {
+    feature::query_tile(tile.z, tile.x, tile.y).map(|resp| {
+        let mut builder = HttpResponse::Ok();
+        builder.set(
+            ContentType("application/x-protobuf".parse::<Mime>().unwrap())
+        );
+        HttpResponse::Ok().body(resp)
+    })
 }

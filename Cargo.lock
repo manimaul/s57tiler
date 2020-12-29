@@ -1724,6 +1724,7 @@ dependencies = [
  "geojson",
  "lazy_static",
  "log",
+ "mime",
  "postgres",
  "r2d2",
  "r2d2-diesel",

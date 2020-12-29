@@ -22,6 +22,7 @@ r2d2_postgres = "0.18.0"
 geojson = "0.20.1"
 lazy_static = "1.4.0"
 postgres = { version = "0.19.0", features = ["with-serde_json-1"] }
+mime = "0.3.16"
 
 # https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout
 [lib]
