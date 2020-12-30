@@ -2,7 +2,7 @@
 extern crate log;
 
 use std::env;
-use actix_web::{App, HttpServer, error, HttpResponse, web};
+use actix_web::{App, HttpServer, web};
 
 
 #[actix_web::main]

@@ -1,11 +1,11 @@
 use actix_web::{delete, get, HttpResponse, post, Responder, web};
 use actix_web::http::header::ContentType;
+use mime::Mime;
 
 use crate::handlers::about::About;
 use crate::handlers::chart::{Chart, ChartInsert};
 use crate::handlers::feature::FeatureInsert;
 use crate::handlers::style::{PathParam, Style};
-use mime::Mime;
 
 mod about;
 mod style;

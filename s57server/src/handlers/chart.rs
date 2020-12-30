@@ -3,7 +3,7 @@ use diesel::prelude::*;
 
 use crate::db;
 use crate::errors::{ErrMapper, Result};
-use crate::schema::charts;
+use crate::schema::{charts, features};
 
 #[derive(Debug, Deserialize, Serialize, PartialEq, Queryable, QueryableByName)]
 #[table_name = "charts"]
@@ -28,12 +28,18 @@ impl Chart {
 
     pub fn delete(id: i64) -> Result<Self> {
         db::db_conn().and_then(|conn| {
+            //retrieve chart
             charts::table
                 .filter(charts::id.eq(&id))
                 .first::<Chart>(&*conn).and_then(|record| {
-                diesel::delete(charts::table
-                    .filter(charts::id.eq(&id)))
-                    .execute(&*conn).map(|_| record)
+                //delete associated features
+                diesel::delete(features::table.filter(features::chart_id.eq(id)))
+                    .execute(&*conn).and_then(|_| {
+                    //delete chart
+                    diesel::delete(charts::table
+                        .filter(charts::id.eq(&id)))
+                        .execute(&*conn).map(|_| record)
+                })
             }).map_not_found("chart not found")
         })
     }

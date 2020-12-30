@@ -1,3 +1,4 @@
+use actix_web::error;
 use diesel::{Connection, PgConnection, RunQueryDsl};
 use diesel::result::Error;
 use diesel::sql_types::{BigInt, Text};
@@ -7,7 +8,6 @@ use serde_json::{Map, Value};
 use crate::{db, errors};
 use crate::errors::ErrMapper;
 use crate::handlers::GeoParams;
-use actix_web::error;
 
 pub type JsonObject = Map<String, Value>;
 
