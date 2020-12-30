@@ -5,7 +5,6 @@ use futures::StreamExt;
 use serde_json::Value;
 
 use crate::{db, schema};
-use crate::constants::MAX_POST_SIZE;
 use crate::errors::{ErrMapper, Result};
 use crate::schema::styles;
 
@@ -36,9 +35,8 @@ impl Style {
         let mut body = web::BytesMut::new();
         while let Some(chunk) = payload.next().await {
             let chunk = chunk?;
-            // limit max size of in-memory payload
-            if (body.len() + chunk.len()) > MAX_POST_SIZE {
-                return Err(error::ErrorBadRequest("overflow"));
+            if (body.len() + chunk.len()) > 262_144 { //256k
+                return Err(error::ErrorPayloadTooLarge("slow your roll pal"));
             }
             body.extend_from_slice(&chunk);
         }

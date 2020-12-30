@@ -8,6 +8,7 @@ use s57server::handlers;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv::dotenv().ok();
     if env::var("RUST_LOG").is_err() {
         env::set_var("RUST_LOG", "info,actix_web=info");
     }
@@ -26,6 +27,7 @@ async fn main() -> std::io::Result<()> {
             .service(handlers::post_geojson)
             .service(handlers::get_geojson)
             .service(handlers::get_tile)
+            .service(handlers::get_resource)
             .app_data(
                 web::JsonConfig::default()
                     // increase body payload size to accommodate large geojson

@@ -1,7 +1,6 @@
 use std::env;
 
 use diesel::pg::PgConnection;
-use dotenv::dotenv;
 use r2d2::{Pool, PooledConnection};
 use r2d2_diesel::ConnectionManager;
 use r2d2_postgres::{postgres::NoTls, PostgresConnectionManager};
@@ -42,7 +41,6 @@ lazy_static! {
 
 lazy_static! {
     static ref DB_CONFIG: DbConfig = {
-        dotenv().ok();
         DbConfig {
             user: env::var("DB_USER").expect("DB_USER must be set"),
             pass: env::var("DB_PASS").expect("DB_PASS must be set"),

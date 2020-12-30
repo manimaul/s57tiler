@@ -1,4 +1,4 @@
-use actix_web::{delete, get, HttpResponse, post, Responder, web};
+use actix_web::{delete, get, HttpResponse, post, Responder, web, HttpRequest};
 use actix_web::http::header::ContentType;
 use mime::Mime;
 
@@ -11,6 +11,7 @@ mod about;
 mod style;
 mod chart;
 mod feature;
+mod files;
 
 ///curl http://localhost:8080/v1/about | jq
 #[get("/v1/about")]
@@ -26,7 +27,7 @@ pub async fn get_style(path_param: web::Path<PathParam>) -> impl Responder {
     })
 }
 
-///curl -v -H "Content-Type: application/json" --request POST  --data '{"foo":"bar"}' http://localhost:8080/v1/style/foo
+///curl -v -H "Content-Type: application/json" --request POST  --data '{"foo":"bar"}' 'http://localhost:8080/v1/style/foo'
 #[post("/v1/style/{name}")]
 pub async fn post_style(
     payload: web::Payload,
@@ -109,4 +110,9 @@ pub async fn get_tile(
         );
         HttpResponse::Ok().body(resp)
     })
+}
+
+#[get("/res/{filename:.*}")]
+pub async fn get_resource(req: HttpRequest) -> impl Responder {
+    files::index(req)
 }
