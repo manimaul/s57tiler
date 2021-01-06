@@ -11,20 +11,42 @@ use crate::handlers::GeoParams;
 
 pub type JsonObject = Map<String, Value>;
 
+pub fn create_mvt_query() {
+    db::db_conn().and_then(|conn| {
+        conn.execute("CREATE OR REPLACE FUNCTION public.concat_mvt(z INTEGER, x INTEGER, y INTEGER)
+    RETURNS BYTEA
+    LANGUAGE plpgsql
+AS
+$BODY$
+DECLARE
+    i   TEXT;
+    res BYTEA DEFAULT '';
+    rec BYTEA;
+BEGIN
+    FOR i IN SELECT DISTINCT layer from features
+        LOOP
+            WITH mvtdata AS (
+                SELECT ST_AsMvtGeom(geom, ST_Transform(ST_TileEnvelope(z, x, y), 4326)) AS geom,
+                       layer                                                            AS name,
+                       props                                                            AS properties
+                FROM features
+                WHERE layer = i AND geom && ST_Transform(ST_TileEnvelope(z, x, y), 4326)
+            )
+            SELECT ST_AsMVT(mvtdata.*, i)
+            FROM mvtdata
+            INTO rec;
+            res := res || rec;
+        END LOOP;
+    RETURN res;
+END
+$BODY$;").map_internal_server_error("fatal error")
+    }).expect("failed to create concat_mvt postgis function");
+}
+
 pub fn query_tile(z: i32, x: i32, y: i32) -> errors::Result<Vec<u8>> {
     db::db_conn2().and_then(|mut conn| {
-        conn.query_one("
-            WITH mvtgeom AS
-                     (
-                         SELECT ST_AsMVTGeom(geom, ST_TileEnvelope($1,$2,$3), 4096) AS geom,
-                                layer                                               AS name,
-                                props                                               AS properties
-                         FROM features
-                         WHERE ST_Intersects(geom, ST_TileEnvelope($1,$2,$3, ST_MakeEnvelope(-180,-90,180,90,4326)))
-                     )
-            SELECT ST_AsMVT(mvtgeom.*, mvtgeom.name)
-            FROM mvtgeom;
-        ", &[&z, &x, &y]).map_internal_server_error("geojson query failed")
+        conn.query_one("SELECT concat_mvt($1,$2,$3);", &[&z, &x, &y])
+            .map_internal_server_error("geojson query failed")
             .and_then(|row| {
                 if row.len() == 1 {
                     let data: Vec<u8> = row.get(0);

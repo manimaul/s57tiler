@@ -10,7 +10,7 @@ use crate::handlers::style::{PathParam, Style};
 mod about;
 mod style;
 mod chart;
-mod feature;
+pub mod feature;
 mod files;
 
 ///curl http://localhost:8080/v1/about | jq
@@ -108,7 +108,7 @@ pub async fn get_tile(
         builder.set(
             ContentType("application/x-protobuf".parse::<Mime>().unwrap())
         );
-        HttpResponse::Ok().body(resp)
+        builder.body(resp)
     })
 }
 

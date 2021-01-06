@@ -1766,6 +1766,7 @@ name = "s57server"
 version = "0.1.0"
 dependencies = [
  "actix-files",
+ "actix-http",
  "actix-web",
  "diesel",
  "dotenv",

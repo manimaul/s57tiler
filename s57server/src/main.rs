@@ -2,7 +2,7 @@
 extern crate log;
 
 use std::env;
-use actix_web::{App, HttpServer, web};
+use actix_web::{App, HttpServer, web, middleware};
 use actix_web::middleware::Logger;
 use s57server::handlers;
 
@@ -14,6 +14,7 @@ async fn main() -> std::io::Result<()> {
     }
     env_logger::init();
     info!("starting s57server");
+    handlers::feature::create_mvt_query();
     HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
@@ -37,5 +38,5 @@ async fn main() -> std::io::Result<()> {
                         mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN
                     })
             )
-    }).bind("127.0.0.1:8080")?.run().await
+    }).bind("127.0.0.1:8081")?.run().await
 }

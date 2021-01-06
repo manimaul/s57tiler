@@ -17,9 +17,9 @@ pub fn create_config(out_dir: &Path, domain_list: Vec<String>) {
   "options": {
     "paths": {
       "root": "",
-      "fonts": "fonts",
-      "sprites": "sprites",
-      "styles": "styles",
+      "fonts": "web/fonts",
+      "sprites": "web/sprites",
+      "styles": "web/styles",
       "mbtiles": ""
     },
     "domains": domain_list,
@@ -66,11 +66,13 @@ fn create_substyle(base_url: &String, depth: &String, color: &String) -> Value {
       "sources": {
         "src_senc": {
           "type": "vector",
-          "url": format!("{}/data/marine-chart.json", base_url)
+          // "url": format!("{}/data/marine-chart.json", base_url)
+          "url": format!("{}/res/marine-chart.json", base_url)
         }
       },
-      "sprite": format!("rastersymbols-{}", color),
-      "glyphs": format!("{}/fonts/{{fontstack}}/{{range}}.pbf", base_url),
+      "sprite": format!("{}/res/sprites/rastersymbols-{}", base_url, color),
+      // "glyphs": format!("{}/fonts/{{fontstack}}/{{range}}.pbf", base_url),
+      "glyphs": format!("{}/res/fonts/{{fontstack}}/{{range}}.pbf", base_url),
       "layers": style_layers(depth, color)} );
     return json_style;
 }
