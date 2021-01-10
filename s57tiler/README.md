@@ -39,24 +39,5 @@ You can find a live demo here: [https://s57dev.mxmariner.com/styles/day_bright_s
 
 ###  Dev Setup
 
-In order to run this locally you'll need system [gdal](https://gdal.org/) installed as well as 
-[tippecanoe](https://github.com/mapbox/tippecanoe). And of course since this is rust you'll need to follow the 
-[rustup](https://rustup.rs/) guide. 
-
-MacOS
-```shell script
-brew install gdal tippecanoe
-```
-
-Linux
-```shell script
-apt install -y libgdal-dev
-git clone https://github.com/mapbox/tippecanoe.git && \
-    cd tippecanoe && \
-    make
-sudo cp /tippecanoe/tippecanoe /usr/local/bin/tippecanoe
-sudo cp /tippecanoe/tile-join /usr/local/bin/tile-join
-sudo cp /tippecanoe/tippecanoe-decode /usr/local/bin/tippecanoe-decode
-sudo cp /tippecanoe/tippecanoe-enumerate /usr/local/bin/tippecanoe-enumerate
-sudo cp /tippecanoe/tippecanoe-json-tool /usr/local/bin/tippecanoe-json-tool
-```
+In order to run this locally you'll need system [gdal](https://gdal.org/) installed. And of course since this is rust 
+you'll need to follow the [rustup](https://rustup.rs/) guide. 

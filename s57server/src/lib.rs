@@ -7,7 +7,7 @@ extern crate log;
 #[macro_use]
 extern crate serde_derive;
 
-mod constants;
+pub mod constants;
 pub mod handlers;
 pub mod schema;
 mod db;

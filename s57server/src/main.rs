@@ -2,9 +2,10 @@
 extern crate log;
 
 use std::env;
-use actix_web::{App, HttpServer, web, middleware};
+use actix_web::{App, HttpServer, web};
 use actix_web::middleware::Logger;
 use s57server::handlers;
+use s57server::constants;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -32,11 +33,11 @@ async fn main() -> std::io::Result<()> {
             .app_data(
                 web::JsonConfig::default()
                     // increase body payload size to accommodate large geojson
-                    .limit(1024 * 1000 )
+                    .limit(1024 * 1000)
                     // accept text/plain content type
                     .content_type(|mime| {
                         mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN
                     })
             )
-    }).bind("127.0.0.1:8081")?.run().await
+    }).bind(constants::socket_address())?.run().await
 }

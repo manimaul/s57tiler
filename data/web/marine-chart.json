@@ -1,0 +1,16 @@
+{
+  "tiles": [
+    "http://localhost:8081/v1/tile/{z}/{x}/{y}"
+  ],
+  "scheme": "xyz",
+  "format": "pbf",
+  "minzoom": 0,
+  "maxzoom": 30,
+  "bounds": [
+    -180,
+    -85.05112877980659,
+    180,
+    85.0511287798066
+  ],
+  "tilejson": "2.2.0"
+}
