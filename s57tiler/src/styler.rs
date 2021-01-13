@@ -67,7 +67,7 @@ fn create_substyle(base_url: &String, depth: &String, color: &String) -> Value {
         "src_senc": {
           "type": "vector",
           // "url": format!("{}/data/marine-chart.json", base_url)
-          "url": format!("{}/res/marine-chart.json", base_url)
+          "url": format!("{}/v1/tile_json", base_url)
         }
       },
       "sprite": format!("{}/res/sprites/rastersymbols-{}", base_url, color),
