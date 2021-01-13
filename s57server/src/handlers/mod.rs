@@ -5,10 +5,10 @@ use mime::Mime;
 use crate::handlers::about::About;
 use crate::handlers::chart::{Chart, ChartInsert};
 use crate::handlers::feature::FeatureInsert;
-use crate::handlers::style::{PathParam, Style};
+use crate::handlers::custom_style::{PathParam, CustomStyle};
 
 mod about;
-mod style;
+mod custom_style;
 mod chart;
 pub mod feature;
 mod files;
@@ -27,21 +27,21 @@ pub async fn tile_json() -> impl Responder {
 }
 
 ///curl http://localhost:8080/v1/style/foo | jq
-#[get("/v1/style/{name}")]
+#[get("/v1/custom_style/{name}")]
 pub async fn get_style(path_param: web::Path<PathParam>) -> impl Responder {
-    Style::query(&path_param.name).map(|style_record: Style| {
+    CustomStyle::query(&path_param.name).map(|style_record: CustomStyle| {
         HttpResponse::Ok().json(style_record.style)
     })
 }
 
 ///curl -v -H "Content-Type: application/json" --request POST  --data '{"foo":"bar"}' 'http://localhost:8080/v1/style/foo'
-#[post("/v1/style/{name}")]
+#[post("/v1/custom_style/{name}")]
 pub async fn post_style(
     payload: web::Payload,
     path_param: web::Path<PathParam>,
 ) -> impl Responder {
     info!("style name posted: {}", &path_param.name);
-    Style::upsert(&path_param.name, payload).await.map(|value| HttpResponse::Ok().json(value))
+    CustomStyle::upsert(&path_param.name, payload).await.map(|value| HttpResponse::Ok().json(value))
 }
 
 ///curl -v -H "Content-Type: application/json" --request POST  --data '{"name": "foo", "scale": 0, "file_name": "foo.000", "updated": "1979", "issued": "1980"}' http://localhost:8080/v1/chart

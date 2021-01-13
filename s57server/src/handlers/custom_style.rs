@@ -10,7 +10,7 @@ use crate::schema::styles;
 
 #[derive(Queryable, QueryableByName)]
 #[table_name = "styles"]
-pub struct Style {
+pub struct CustomStyle {
     pub id: i64,
     pub name: String,
     pub style: Value,
@@ -21,12 +21,12 @@ pub struct PathParam {
     pub name: String,
 }
 
-impl Style {
+impl CustomStyle {
 
-    pub fn query(name: &str) -> Result<Style> {
+    pub fn query(name: &str) -> Result<CustomStyle> {
         db::db_conn().and_then(|conn|{
             styles::table.filter(styles::name.eq(name))
-                .first::<Style>(&*conn)
+                .first::<CustomStyle>(&*conn)
                 .map_not_found("style not found")
         })
     }

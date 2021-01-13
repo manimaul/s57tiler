@@ -15,11 +15,11 @@
 <div id="map"></div>
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    var style = "/v1/style/day_meters_style.json"
+    var style = "/v1/custom_style/day_meters_style.json"
     if (urlParams.has('fathoms')) {
-        style = "/v1/style/day_fathoms_style.json"
+        style = "/v1/custom_style/day_fathoms_style.json"
     } else if (urlParams.has('feet')) {
-        style = "/v1/style/day_feet_style.json"
+        style = "/v1/custom_style/day_feet_style.json"
     }
     var map = new mapboxgl.Map({
         container: 'map', // container id

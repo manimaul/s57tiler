@@ -40,12 +40,12 @@ function create_style_json() {
   do
     curl -H "Content-Type: application/json" \
          --request POST --data-binary "@$DIR/data/web//styles/$i.json" \
-         "http://localhost:8081/v1/style/$i.json" > /dev/null
+         "http://localhost:8081/v1/custom_style/$i.json" > /dev/null
   done
 }
 
 create_style_json
-sample_chart_geojson
+#sample_chart_geojson
 
 # todo delete tileserver configs
 # todo https://github.com/mapbox/tilejson-spec/blob/master/2.2.0/schema.json
