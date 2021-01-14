@@ -1780,6 +1780,7 @@ dependencies = [
  "r2d2",
  "r2d2-diesel",
  "r2d2_postgres",
+ "s57tiler",
  "serde",
  "serde_derive",
  "serde_json",

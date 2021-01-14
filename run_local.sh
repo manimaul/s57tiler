@@ -32,19 +32,6 @@ function sample_chart_geojson() {
   done
 }
 
-function create_style_json() {
-  cargo run --package s57tiler --bin s57tiler -- style -o "${DIR}"/data/web/styles -s localhost:8081
-
-  styles=( day_meters_style day_fathoms_style day_feet_style )
-  for i in "${styles[@]}"
-  do
-    curl -H "Content-Type: application/json" \
-         --request POST --data-binary "@$DIR/data/web//styles/$i.json" \
-         "http://localhost:8081/v1/custom_style/$i.json" > /dev/null
-  done
-}
-
-create_style_json
 #sample_chart_geojson
 
 # todo delete tileserver configs

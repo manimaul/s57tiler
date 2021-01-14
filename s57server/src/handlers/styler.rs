@@ -1,6 +1,6 @@
 use std::path::Path;
-use crate::{utils, soundg, seaare, depare, depcnt, boyspp, lights};
-use crate::colors;
+use s57tiler::{colors, utils, seaare, depare, depcnt, soundg, boyspp, lights};
+use crate::constants;
 use serde_json::json;
 use serde_json::Value;
 
@@ -9,72 +9,31 @@ fn depths() -> Vec<String> {
 }
 
 
-/// https://tileserver.readthedocs.io/en/latest/config.html
-pub fn create_config(out_dir: &Path, domain_list: Vec<String>) {
-    utils::check_out_dir(out_dir);
-    let config_json = json!(
-{
-  "options": {
-    "paths": {
-      "root": "",
-      "fonts": "web/fonts",
-      "sprites": "web/sprites",
-      "styles": "web/styles",
-      "mbtiles": ""
-    },
-    "domains": domain_list,
-    "formatQuality": {
-      "jpeg": 80,
-      "webp": 90
-    },
-    "maxScaleFactor": 3,
-    "maxSize": 2048,
-    "pbfAlias": "pbf",
-    "serveAllFonts": true,
-    "serveAllStyles": true,
-    "serveStaticMaps": true,
-    "tileMargin": 0
-  },
-  "data": {
-    "marine-chart": {
-      "mbtiles": "chart.mbtiles"
-    }
-  }
-}
-    );
-    utils::write_json(out_dir, "config.json", &config_json.to_string());
-}
-
 /// https://docs.mapbox.com/mapbox-gl-js/style-spec/
-pub fn create_style(
-    out_dir: &Path,
-    base_url: &String,
-) {
-    utils::check_out_dir(out_dir);
-    for depth in depths() {
-        for color in colors::COLOR_KEYS.iter() {
-            let style_json = create_substyle(&base_url, &depth, &color);
-            utils::write_json(out_dir, format!("{}_{}_style.json", color, depth).as_str(), &style_json.to_string());
-        }
+pub fn create_style(depth: &String, color: &String) -> Option<Value> {
+    if !depths().contains(depth) {
+        info!("style depth not found: {}", &depth);
+        return None
     }
-}
-
-fn create_substyle(base_url: &String, depth: &String, color: &String) -> Value {
+    if !colors::COLOR_KEYS.contains(&color) {
+        info!("style color not found: {}", &color);
+        return None
+    }
+    //todo: (WK) scheme - http or https
+    let base_url = format!("http://{}", constants::socket_address());
     let json_style = json!({
       "version": 8,
       "name": format!("{}-{}", color, depth),
       "sources": {
         "src_senc": {
           "type": "vector",
-          // "url": format!("{}/data/marine-chart.json", base_url)
           "url": format!("{}/v1/tile_json", base_url)
         }
       },
       "sprite": format!("{}/res/sprites/rastersymbols-{}", base_url, color),
-      // "glyphs": format!("{}/fonts/{{fontstack}}/{{range}}.pbf", base_url),
       "glyphs": format!("{}/res/fonts/{{fontstack}}/{{range}}.pbf", base_url),
       "layers": style_layers(depth, color)} );
-    return json_style;
+    return Some(json_style);
 }
 
 fn style_layers(depth: &String, color: &String) -> Value {

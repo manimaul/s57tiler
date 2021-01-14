@@ -1,21 +1,16 @@
-#![recursion_limit="256"]
-#[macro_use]
-extern crate lazy_static;
-
-mod s57;
-mod geojson_builder;
-mod styler;
-mod utils;
-mod colors;
-mod soundg;
-mod seaare;
-mod depare;
-mod depcnt;
-mod boyspp;
-mod lights;
-mod catspm;
-mod util;
-mod zfinder;
+use s57tiler::s57;
+use s57tiler::geojson_builder;
+use s57tiler::utils;
+use s57tiler::colors;
+use s57tiler::soundg;
+use s57tiler::seaare;
+use s57tiler::depare;
+use s57tiler::depcnt;
+use s57tiler::boyspp;
+use s57tiler::lights;
+use s57tiler::catspm;
+use s57tiler::util;
+use s57tiler::zfinder;
 
 use std::path::Path;
 
@@ -67,50 +62,6 @@ fn main() {
                 .takes_value(true)
             )
         )
-        .subcommand(SubCommand::with_name("style")
-            .about("Generates a Mapbox Vector style for S57 marine charts")
-            .arg(Arg::with_name("socket_address")
-                .help("The socket address or host name where where your style will be served from. \n\
-                          eg 'localhost:8080' or 's57dev.mxmariner.com`")
-                .short("s")
-                .long("s")
-                .required(true)
-                .takes_value(true)
-            )
-            .arg(Arg::with_name("tls")
-                .help("Specifies whether the socket address uses https or the default http")
-                .short("t")
-                .long("tls")
-                .required(false)
-                .takes_value(false)
-            )
-            .arg(Arg::with_name("out_dir")
-                .help("Sets the output directory")
-                .short("o")
-                .long("output")
-                .required(true)
-                .takes_value(true)
-            )
-        )
-        .subcommand(SubCommand::with_name("config")
-            .about("Generates a TileServer-GL Config")
-            .arg(Arg::with_name("socket_address")
-                .help("The socket address' or host name where where your style will be served from. \n\
-                          This can be a comma delimited list.\n\
-                          eg '127.0.0.1:8080,localhost:8080' or 's57dev.mxmariner.com`")
-                .short("s")
-                .long("s")
-                .required(true)
-                .takes_value(true)
-            )
-            .arg(Arg::with_name("out_dir")
-                .help("Sets the output directory")
-                .short("o")
-                .long("output")
-                .required(true)
-                .takes_value(true)
-            )
-        )
         .get_matches();
 
 
@@ -118,10 +69,6 @@ fn main() {
         println!("No command given, try help.");
     } else if let Some(matches) = matches.subcommand_matches("mbtiles") {
         mbtiles(matches);
-    } else if let Some(matches) = matches.subcommand_matches("style") {
-        style(matches);
-    } else if let Some(matches) = matches.subcommand_matches("config") {
-        config(matches);
     }
 }
 
@@ -144,25 +91,4 @@ fn mbtiles(matches: &ArgMatches) {
             .map(|f| Path::new(f))
             .for_each(|f| fs::remove_file(f).expect("expected to remove file"));
     }
-}
-
-fn style(matches: &ArgMatches) {
-    let out_dir = matches.value_of("out_dir").unwrap();
-    let socket_address = matches.value_of("socket_address").unwrap();
-    let addess = if matches.is_present("tls") {
-        format!("https://{}", socket_address)
-    } else {
-        format!("http://{}", socket_address)
-    };
-    styler::create_style(Path::new(out_dir), &addess);
-}
-
-
-fn config(matches: &ArgMatches) {
-    let out_dir = matches.value_of("out_dir").unwrap();
-    let sa_list: Vec<String> = matches.value_of("socket_address").unwrap()
-        .split(",")
-        .map(|s| String::from(s))
-        .collect();
-    styler::create_config(Path::new(out_dir), sa_list);
 }

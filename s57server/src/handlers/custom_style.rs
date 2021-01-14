@@ -16,11 +16,6 @@ pub struct CustomStyle {
     pub style: Value,
 }
 
-#[derive(Deserialize)]
-pub struct PathParam {
-    pub name: String,
-}
-
 impl CustomStyle {
 
     pub fn query(name: &str) -> Result<CustomStyle> {

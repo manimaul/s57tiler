@@ -5,7 +5,8 @@ use mime::Mime;
 use crate::handlers::about::About;
 use crate::handlers::chart::{Chart, ChartInsert};
 use crate::handlers::feature::FeatureInsert;
-use crate::handlers::custom_style::{PathParam, CustomStyle};
+use crate::handlers::custom_style::CustomStyle;
+use actix_http::error;
 
 mod about;
 mod custom_style;
@@ -13,6 +14,30 @@ mod chart;
 pub mod feature;
 mod files;
 mod tilejson;
+pub mod styler;
+
+#[derive(Deserialize)]
+pub struct PathParam {
+    pub name: String,
+}
+
+#[derive(Deserialize)]
+pub struct IdQuery {
+    id: i64,
+}
+
+#[derive(Deserialize)]
+pub struct GeoParams {
+    chart_id: i64,
+    name: String
+}
+
+#[derive(Deserialize)]
+pub struct Tile {
+    pub z: i32,
+    pub x: i32,
+    pub y: i32
+}
 
 ///curl http://localhost:8080/v1/about | jq
 #[get("/v1/about")]
@@ -26,17 +51,27 @@ pub async fn tile_json() -> impl Responder {
     HttpResponse::Ok().json(tilejson::tilejson())
 }
 
-///curl http://localhost:8080/v1/style/foo | jq
+///curl http://localhost:8081/v1/style/day/meters | jq
+#[get("/v1/style/{color}/{depth}")]
+pub async fn get_style(path_param: web::Path<(String, String)>) -> impl Responder {
+    let color = String::from(&path_param.0.0);
+    let depth = String::from(&path_param.0.1);
+    styler::create_style(&depth, &color)
+        .ok_or(error::ErrorNotFound("no such resource"))
+        .map(|value| HttpResponse::Ok().json(value))
+}
+
+///curl http://localhost:8080/v1/custom_style/foo | jq
 #[get("/v1/custom_style/{name}")]
-pub async fn get_style(path_param: web::Path<PathParam>) -> impl Responder {
+pub async fn get_custom_style(path_param: web::Path<PathParam>) -> impl Responder {
     CustomStyle::query(&path_param.name).map(|style_record: CustomStyle| {
         HttpResponse::Ok().json(style_record.style)
     })
 }
 
-///curl -v -H "Content-Type: application/json" --request POST  --data '{"foo":"bar"}' 'http://localhost:8080/v1/style/foo'
+///curl -v -H "Content-Type: application/json" --request POST  --data '{"foo":"bar"}' 'http://localhost:8080/v1/custom_style/foo'
 #[post("/v1/custom_style/{name}")]
-pub async fn post_style(
+pub async fn post_custom_style(
     payload: web::Payload,
     path_param: web::Path<PathParam>,
 ) -> impl Responder {
@@ -50,11 +85,6 @@ pub async fn post_chart(
     payload: web::Json<ChartInsert>
 ) -> impl Responder {
     payload.into_inner().insert()
-}
-
-#[derive(Deserialize)]
-pub struct IdQuery {
-    id: i64,
 }
 
 ///curl http://localhost:8080/v1/chart?id=1 | jq
@@ -71,12 +101,6 @@ pub async fn delete_chart(
     id: web::Query<IdQuery>
 ) -> impl Responder {
     Chart::delete(id.id).map(|chart| HttpResponse::Ok().json(chart))
-}
-
-#[derive(Deserialize)]
-pub struct GeoParams {
-    chart_id: i64,
-    name: String
 }
 
 ///curl -v -H "Content-Type: application/json" --request POST --data-binary "@data/BOYSPP.json" 'http://localhost:8080/v1/geojson?chart_id=8&name=BOYSPP'
@@ -97,13 +121,6 @@ pub async fn get_geojson(
     params: web::Query<GeoParams>
 ) -> impl Responder {
     feature::query(&params.0).map(|results| HttpResponse::Ok().json(results))
-}
-
-#[derive(Deserialize)]
-pub struct Tile {
-    pub z: i32,
-    pub x: i32,
-    pub y: i32
 }
 
 #[get("/v1/tile/{z}/{x}/{y}")]
