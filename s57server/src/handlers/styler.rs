@@ -1,5 +1,4 @@
-use std::path::Path;
-use s57tiler::{colors, utils, seaare, depare, depcnt, soundg, boyspp, lights};
+use s57tiler::{colors, seaare, depare, depcnt, soundg, boyspp, lights};
 use crate::constants;
 use serde_json::json;
 use serde_json::Value;
@@ -19,8 +18,7 @@ pub fn create_style(depth: &String, color: &String) -> Option<Value> {
         info!("style color not found: {}", &color);
         return None
     }
-    //todo: (WK) scheme - http or https
-    let base_url = format!("http://{}", constants::socket_address());
+    let base_url = constants::external_base_url();
     let json_style = json!({
       "version": 8,
       "name": format!("{}-{}", color, depth),

@@ -28,12 +28,14 @@ function sample_chart_geojson() {
   do
     curl -H "Content-Type: application/json" \
          --request POST --data-binary "@data/$i.json" \
-         "http://localhost:8081/v1/geojson?chart_id=9&name=$i" > /dev/null
+         "http://localhost:8080/v1/geojson?chart_id=9&name=$i" > /dev/null
   done
 }
 
-#sample_chart_geojson
+function run() {
+  pushd "$DIR/s57server"
+  cargo run --package s57server --bin s57server
+}
 
-# todo delete tileserver configs
-# todo https://github.com/mapbox/tilejson-spec/blob/master/2.2.0/schema.json
-# todo https://github.com/mapbox/tilejson-spec/tree/master/2.2.0"
+run
+#sample_chart_geojson

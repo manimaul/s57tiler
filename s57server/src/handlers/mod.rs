@@ -45,13 +45,13 @@ pub async fn info() -> impl Responder {
     About::new()
 }
 
-///curl http://localhost:8081/v1/tile_json | jq
+///curl http://localhost:8080/v1/tile_json | jq
 #[get("/v1/tile_json")]
 pub async fn tile_json() -> impl Responder {
     HttpResponse::Ok().json(tilejson::tilejson())
 }
 
-///curl http://localhost:8081/v1/style/day/meters | jq
+///curl http://localhost:8080/v1/style/day/meters | jq
 #[get("/v1/style/{color}/{depth}")]
 pub async fn get_style(path_param: web::Path<(String, String)>) -> impl Responder {
     let color = String::from(&path_param.0.0);

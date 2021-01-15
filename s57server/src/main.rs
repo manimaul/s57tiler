@@ -41,5 +41,5 @@ async fn main() -> std::io::Result<()> {
                         mime.type_() == mime::TEXT && mime.subtype() == mime::PLAIN
                     })
             )
-    }).bind(constants::socket_address())?.run().await
+    }).bind(constants::local_socket_address())?.run().await
 }

@@ -2,7 +2,7 @@ use serde_json::{Value, json};
 use crate::constants;
 
 pub fn tilejson() -> Value {
-    let url = format!("http:/{}/v1/tile/{{z}}/{{x}}/{{y}}", constants::socket_address());
+    let url = format!("{}/v1/tile/{{z}}/{{x}}/{{y}}", constants::external_base_url());
     json!(
     {
         "tiles": [
