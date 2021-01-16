@@ -7,6 +7,7 @@ use crate::handlers::chart::{Chart, ChartInsert};
 use crate::handlers::feature::FeatureInsert;
 use crate::handlers::custom_style::CustomStyle;
 use actix_http::error;
+use actix_multipart::Multipart;
 
 mod about;
 mod custom_style;
@@ -15,6 +16,7 @@ pub mod feature;
 mod files;
 mod tilejson;
 pub mod styler;
+mod enc_batch;
 
 #[derive(Deserialize)]
 pub struct PathParam {
@@ -139,4 +141,10 @@ pub async fn get_tile(
 #[get("/res/{filename:.*}")]
 pub async fn get_resource(req: HttpRequest) -> impl Responder {
     files::index(req)
+}
+
+///curl -v --form file="@${HOME}/Charts/ENC_ROOT.zip" 'http://localhost:8080/v1/enc_save'
+#[post("/v1/enc_save")]
+pub async fn post_enc_save(payload: Multipart) -> impl Responder {
+    enc_batch::save_enc_file(payload).await
 }

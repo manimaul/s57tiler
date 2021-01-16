@@ -13,6 +13,8 @@ futures = "0.3.8"
 actix-web = "3.3.2"
 actix-http = "2.2.0"
 actix-files = "0.5.0"
+actix-multipart = "0.3.0"
+uuid = { version = "0.8.2", features = ["v4"] }
 serde = { version = "1.0.118", features = ["derive"] }
 serde_json = "1.0.59"
 serde_derive = "1.0.118"
@@ -25,6 +27,7 @@ geojson = "0.20.1"
 lazy_static = "1.4.0"
 postgres = { version = "0.19.0", features = ["with-serde_json-1"] }
 mime = "0.3.16"
+sanitize-filename = "0.3.0"
 s57tiler = { path = "../s57tiler" }
 
 # https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout
