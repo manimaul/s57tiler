@@ -8,6 +8,9 @@ use crate::handlers::feature::FeatureInsert;
 use crate::handlers::custom_style::CustomStyle;
 use actix_http::error;
 use actix_multipart::Multipart;
+use actix_web_actors::ws;
+use crate::handlers::enc_batch::GeoUploadWs;
+use crate::errors::ErrMapper;
 
 mod about;
 mod custom_style;
@@ -31,14 +34,14 @@ pub struct IdQuery {
 #[derive(Deserialize)]
 pub struct GeoParams {
     chart_id: i64,
-    name: String
+    name: String,
 }
 
 #[derive(Deserialize)]
 pub struct Tile {
     pub z: i32,
     pub x: i32,
-    pub y: i32
+    pub y: i32,
 }
 
 ///curl http://localhost:8080/v1/about | jq
@@ -147,4 +150,14 @@ pub async fn get_resource(req: HttpRequest) -> impl Responder {
 #[post("/v1/enc_save")]
 pub async fn post_enc_save(payload: Multipart) -> impl Responder {
     enc_batch::save_enc_file(payload).await
+}
+
+#[get("/v1/ws/enc_process")]
+pub async fn ws_enc_process(req: HttpRequest, stream: web::Payload) -> impl Responder {
+    web::Query::<GeoUploadWs>::from_query(req.query_string())
+        .map_bad_request("invalid query params")
+        .map(|query| query.into_inner())
+        .and_then(|geo_up| {
+            ws::start(geo_up, &req, stream)
+        })
 }

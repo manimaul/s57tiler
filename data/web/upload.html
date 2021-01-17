@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Upload Test</title>
 </head>
 <body>
@@ -10,6 +10,8 @@
     <input type="submit"/>
 </form>
 
+<div id="msg"/>
+
 <script>
     formElem.onsubmit = async (e) => {
         e.preventDefault();
@@ -18,8 +20,33 @@
             body: new FormData(formElem)
         });
         let result = await response.json();
-        alert(result.uuid);
+        result.files.forEach(file => ws({uuid: result.uuid, file: file}))
     };
+
+    var msgDiv = document.getElementById('msg');
+
+    function queryParams(obj) {
+        return '?' + Object.keys(obj).reduce(function (a, k) {
+            a.push(k + '=' + encodeURIComponent(obj[k]));
+            return a;
+        }, []).join('&');
+    }
+
+    function ws(result) {
+        var baseUri = (window.location.protocol == 'https:' && 'wss://' || 'ws://') + window.location.host;
+        let uri = `${baseUri}/v1/ws/enc_process${queryParams(result)}`
+        var webSocket = new WebSocket(uri);
+        webSocket.onclose = function (event) {
+            msgDiv.innerHTML += `Done!</br>`;
+        };
+        webSocket.onopen = function (event) {
+            msgDiv.innerHTML += `Working...</br>`;
+        };
+        webSocket.onmessage = function (event) {
+            msgDiv.innerHTML += `Message: ${event.data}</br>`;
+        };
+    }
+
 </script>
 </body>
 </html>

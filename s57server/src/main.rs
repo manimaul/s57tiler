@@ -33,6 +33,7 @@ async fn main() -> std::io::Result<()> {
             .service(handlers::get_resource)
             .service(handlers::tile_json)
             .service(handlers::post_enc_save)
+            .service(handlers::ws_enc_process)
             .app_data(
                 web::JsonConfig::default()
                     // increase body payload size to accommodate large geojson
