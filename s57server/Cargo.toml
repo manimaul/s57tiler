@@ -32,6 +32,7 @@ mime = "0.3.16"
 sanitize-filename = "0.3.0"
 s57tiler = { path = "../s57tiler" }
 zip = "0.5.9"
+glob = "0.3.0"
 
 # https://doc.rust-lang.org/cargo/reference/manifest.html#the-project-layout
 [lib]

@@ -10,6 +10,7 @@ use actix_multipart::Multipart;
 use actix_web::{Error, HttpResponse, web};
 use actix_web_actors::ws;
 use futures::{StreamExt, TryStreamExt};
+use glob::glob;
 use sanitize_filename;
 use uuid::Uuid;
 
@@ -115,16 +116,33 @@ impl GeoUploadWs {
     }
 
     fn find_geo_records(&self, root: PathBuf) -> Vec<PathBuf> {
-        //todo:
-        return vec![]
+        fs::canonicalize(root).ok().and_then(|r| {
+            let pattern = format!("{}/**/*.000", r.display().to_string());
+            glob(&pattern).map(|ea| {
+                ea.into_iter()
+                    .filter(|ea| ea.is_ok())
+                    .map(|ea| ea.unwrap())
+                    .filter(|ea| {
+                        ea.file_stem()
+                            .and_then(|stem| stem.to_str())
+                            .map(|stem| !stem.starts_with("."))
+                            .unwrap_or(false)
+                    })
+                    .collect::<Vec<PathBuf>>()
+            }).ok()
+        }).unwrap_or(vec![])
     }
 
     fn process_geo_data(&self, ctx: &mut ws::WebsocketContext<Self>) {
         self.unzip(ctx).and_then(|zip_path| {
-            ctx.text(format!("Processing geo data: {}", &zip_path.display()));
+            ctx.text(format!("Processing geo data..."));
+            let mut count = 0;
             for record in self.find_geo_records(zip_path) {
-
+                ctx.text(format!("processing {:?}", &record.file_stem().unwrap()));
+                //todo:(WK) - record is a path to a .000 s57 file
+                count += 1;
             }
+            ctx.text(format!("processed {} record(s)", count));
             Some(())
         }).or_else(|| {
             ctx.text(format!("Error processing geo data!"));
