@@ -14,7 +14,6 @@ use sanitize_filename;
 use uuid::Uuid;
 
 use crate::errors::ErrMapper;
-use actix_web_actors::ws::CloseReason;
 
 #[derive(Serialize)]
 struct EncUpload {
@@ -69,7 +68,6 @@ pub struct GeoUploadWs {
 }
 
 impl GeoUploadWs {
-
     pub fn is_folder_empty(path: impl AsRef<Path>) -> bool {
         fs::read_dir(path).map_or(false, |p| p.take(1).count() == 0)
     }
@@ -77,6 +75,10 @@ impl GeoUploadWs {
     fn uuid_dir_path(&self) -> Option<PathBuf> {
         enc_upload_dir().ok()
             .map(|dir| Path::new(&dir).join(&self.uuid))
+    }
+
+    fn zip_out_path(&self) -> Option<PathBuf> {
+        self.uuid_dir_path().map(|dir| Path::new(&dir).join("zip_out"))
     }
 
     fn file_path(&self) -> Option<PathBuf> {
@@ -96,6 +98,37 @@ impl GeoUploadWs {
             Self::is_folder_empty(dir)
         }).and_then(|dir| {
             fs::remove_dir(dir).ok()
+        });
+    }
+
+    fn unzip(&self, ctx: &mut ws::WebsocketContext<Self>) -> Option<PathBuf> {
+        ctx.text(format!("Extracting geo file: {}", self.file));
+        self.file_path().and_then(|file| {
+            fs::File::open(file).ok()
+        }).and_then(|fd| {
+            zip::ZipArchive::new(fd).ok().and_then(|mut zip| {
+                self.zip_out_path().and_then(|dir| {
+                    zip.extract(&dir).ok().map(|_| dir)
+                })
+            })
+        })
+    }
+
+    fn find_geo_records(&self, root: PathBuf) -> Vec<PathBuf> {
+        //todo:
+        return vec![]
+    }
+
+    fn process_geo_data(&self, ctx: &mut ws::WebsocketContext<Self>) {
+        self.unzip(ctx).and_then(|zip_path| {
+            ctx.text(format!("Processing geo data: {}", &zip_path.display()));
+            for record in self.find_geo_records(zip_path) {
+
+            }
+            Some(())
+        }).or_else(|| {
+            ctx.text(format!("Error processing geo data!"));
+            None
         });
     }
 }
@@ -124,7 +157,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for GeoUploadWs {
         if let Some(file_path) = self.file_path() {
             debug!("rendering file path {:?}", file_path);
             ctx.text(format!("Rendering file: {}/{}", &self.uuid, &self.file));
-            //todo: perform render
+            self.process_geo_data(ctx);
             self.cleanup();
             ctx.close(None)
         } else {}
