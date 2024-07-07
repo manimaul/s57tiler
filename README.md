@@ -1,4 +1,5 @@
-# S57 Chart to GeoJson & Mapbox Vector Tile (MVT) Renderer
+## S57 Chart to GeoJson & Mapbox Vector Tile (MVT) Renderer
+# NOTE: This project is a proof of concept and will not be developed futher. However, it is being developed using a different tech stack. Please see https://openenc.com/enc . 
 
 The goal of this project is to render geojson and json meta data from S57 nautical chart files suitable for input to 
 [tippecanoe](https://github.com/mapbox/tippecanoe) which transforms the data into [MVT](https://docs.mapbox.com/vector-tiles/specification/) / MBTiles.
@@ -6,7 +7,6 @@ The goal of this project is to render geojson and json meta data from S57 nautic
 We will then serve the data with [tileserver-gl](https://github.com/maptiler/tileserver-gl) and work on styling the chart
 with [maputnik](https://github.com/maputnik/editor/wiki).
 
-Note: This project is still very much a *WORK IN PROGRESS*.
 
 ### Example
 
