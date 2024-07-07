@@ -11,17 +11,18 @@ Note: This project is still very much a *WORK IN PROGRESS*.
 ### Example
 
 ```shell script
+# Process and convert s57 ENC data locally or in a docker container  
 cargo run -- mbtiles -i $(pwd)/data/charts/US5WA22M/US5WA22M.000 -o $(pwd)/data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
 cargo run -- config -o $(pwd)/data -s localhost:8080,127.0.0.1:8080
 cargo run -- style -o $(pwd)/data/styles -s 127.0.0.1:8080
-docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
-
-#OR
+# OR
 docker build -t s57t .
-docker run -v $(pwd)/data:/data s57t s57tiler mbtiles -i /data/charts/US5WA22M/US5WA22M.000 -o /data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
+docker run --rm -v $(pwd)/data:/data s57t s57tiler mbtiles -i /data/charts/US5WA22M/US5WA22M.000 -o /data -n LNDARE,DEPARE,SEAARE,SLCONS,PONTON,HULKES,SOUNDG,BOYSPP
+docker run --rm -v $(pwd)/data:/data s57t s57tiler config -s localhost:8080,127.0.0.1:8080 -o /data
+docker run --rm -v $(pwd)/data/styles:/styles s57t s57tiler style -s 127.0.0.1:8080 -o /styles
 
 # Serve up the rendered marine chart / map
-docker run --rm -v $(pwd)/data:/data -p 8080:80 maptiler/tileserver-gl
+docker run --rm -v $(pwd)/data:/data -p 8080:8080 maptiler/tileserver-gl
 
 # Optionally fire up maputnik to work on styling
 docker run -it --rm -p 8888:8888 maputnik/editor
